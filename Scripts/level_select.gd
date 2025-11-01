@@ -43,6 +43,12 @@ func setup_from_array(_rooms):
 			get_node("Right").queue_free()
 
 func setup():
+	print_tree_pretty()
+	if (get_node("Right") != null):
+		get_node("Right").queue_free()
+	# An ugly solution, but it works
+	if (get_node("Right2") != null):
+		get_node("Right2").queue_free()
 	print("Current: " + str(current_index) + " Special: " + str(special_index))
 	rooms = ["Puzzle"]
 	rooms.append(extra_rooms.pick_random())
@@ -51,17 +57,14 @@ func setup():
 	if (current_index == special_index && get_node("/root/BaseScene/Globals").sideboard_unlocked):
 		print("Adding special room button")
 		var right: Button = Button.new()
-		right.name = "Right"
 		right.position = Vector2(300, 360)
 		add_child(right)
+		right.name = "Right"
 		move_child(right, -1)
-		get_node("Right").text = rooms[1]
-		get_node("Right").pressed.connect(choose_level.bind(rooms[1]))
-		get_node("Right").disabled = false
-		get_node("Right").visible = true
-	else:
-		if (get_node("Right") != null):
-			get_node("Right").queue_free()
+		right.text = rooms[1]
+		right.pressed.connect(choose_level.bind(rooms[1]))
+		right.disabled = false
+		right.visible = true
 	current_index = (current_index + 1) % 3
 	if (current_index == 0):
 		special_index = randi_range(0, 2)
