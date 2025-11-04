@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://d3415jomabujo"]
+
+[ext_resource type="PackedScene" uid="uid://cjo645k1s7c12" path="res://Scenes/helper.tscn" id="1_3f6w3"]
+[ext_resource type="Script" path="res://Scripts/cleaner_helper.gd" id="2_e4e85"]
+[ext_resource type="Texture2D" uid="uid://cigduiiq0s2gs" path="res://Art/broom.png" id="3_t6tcd"]
+
+[node name="CleanerHelper" instance=ExtResource("1_3f6w3")]
+script = ExtResource("2_e4e85")
+
+[node name="HelperSprite" parent="." index="1"]
+position = Vector2(1, -1.05785)
+scale = Vector2(0.826446, 0.826446)
+texture = ExtResource("3_t6tcd")
