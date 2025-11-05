@@ -538,7 +538,7 @@ func _input(event):
 func rotate_blocks():
 	for x in width:
 		for y in height:
-			if (all_pieces[x][y].colour == "rotate"):
+			if (all_pieces[x][y].colour == "rotate" || all_pieces[x][y].colour == "Xrotate"):
 				all_pieces[x][y].rotate_piece()
 				var all_neighbours = []
 				all_neighbours.append(Vector2(x - 1, y - 1))
