@@ -1,16 +1,45 @@
-[gd_scene load_steps=2 format=3 uid="uid://c4stihbs5cu5j"]
+[gd_scene load_steps=7 format=3 uid="uid://c4stihbs5cu5j"]
 
 [ext_resource type="Script" path="res://Scripts/black_market.gd" id="1_jo4he"]
+[ext_resource type="Texture2D" uid="uid://b0lx2nq5yry12" path="res://Art/black_market.png" id="2_p3o83"]
+[ext_resource type="Texture2D" uid="uid://br4s6nivnqidg" path="res://Art/chip_trader.png" id="2_ta0ay"]
+[ext_resource type="Texture2D" uid="uid://dwpxtwqq5fu0j" path="res://Art/battery.png" id="3_ca81v"]
+[ext_resource type="Texture2D" uid="uid://b0r0c10dnqj88" path="res://Art/hacker.png" id="4_jl787"]
+[ext_resource type="Texture2D" uid="uid://di0tatstckvoe" path="res://Art/smuggler.png" id="5_o1nro"]
 
 [node name="BlackMarket" type="Node2D"]
 script = ExtResource("1_jo4he")
 
-[node name="BlackMarketLabel" type="Label" parent="."]
-offset_left = 600.0
-offset_top = 50.0
-offset_right = 753.0
-offset_bottom = 73.0
-text = "THE BLACK MARKET"
+[node name="ChipTraderSprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(640, 360)
+texture = ExtResource("2_ta0ay")
+
+[node name="BatterySprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(640, 360)
+texture = ExtResource("3_ca81v")
+
+[node name="HackerSprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(640, 360)
+texture = ExtResource("4_jl787")
+
+[node name="SmugglerSprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(640, 360)
+texture = ExtResource("5_o1nro")
+
+[node name="BackButton" type="Button" parent="."]
+offset_left = 21.0
+offset_top = 670.0
+offset_right = 89.0
+offset_bottom = 701.0
+text = "<< Back"
+
+[node name="MarketBackground" type="Sprite2D" parent="."]
+position = Vector2(640, 360)
+texture = ExtResource("2_p3o83")
 
 [node name="NewRunButton" type="Button" parent="."]
 offset_left = 550.0
@@ -19,9 +48,36 @@ offset_right = 773.0
 offset_bottom = 681.0
 text = "Once more into the mines..."
 
-[node name="DiamondsLabel" type="Label" parent="."]
-offset_left = 100.0
-offset_top = 50.0
-offset_right = 197.0
-offset_bottom = 73.0
-text = "Shards: 0"
+[node name="ShardsLabel" type="RichTextLabel" parent="."]
+offset_left = 21.0
+offset_top = 18.0
+offset_right = 354.0
+offset_bottom = 58.0
+bbcode_enabled = true
+text = "[color=black]Shards: 0[/color]"
+
+[node name="BatteryButton" type="Button" parent="."]
+offset_left = 761.0
+offset_top = 293.0
+offset_right = 882.0
+offset_bottom = 324.0
+text = "Battery Trader"
+
+[node name="HackerButton" type="Button" parent="."]
+offset_left = 423.0
+offset_top = 220.0
+offset_right = 486.0
+offset_bottom = 251.0
+text = "Hacker"
+
+[node name="ChipTraderButton" type="Button" parent="."]
+offset_left = 271.0
+offset_top = 597.0
+offset_right = 370.0
+offset_bottom = 628.0
+text = "Chip Trader"
+
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="BatteryButton" to="." method="_on_battery_button_pressed"]
+[connection signal="pressed" from="HackerButton" to="." method="_on_hacker_button_pressed"]
+[connection signal="pressed" from="ChipTraderButton" to="." method="_on_chip_trader_button_pressed"]
