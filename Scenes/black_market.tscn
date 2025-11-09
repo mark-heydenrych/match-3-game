@@ -77,7 +77,15 @@ offset_right = 370.0
 offset_bottom = 628.0
 text = "Chip Trader"
 
+[node name="SmugglerButton" type="Button" parent="."]
+offset_left = 87.0
+offset_top = 204.0
+offset_right = 168.0
+offset_bottom = 235.0
+text = "Smuggler"
+
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="BatteryButton" to="." method="_on_battery_button_pressed"]
 [connection signal="pressed" from="HackerButton" to="." method="_on_hacker_button_pressed"]
 [connection signal="pressed" from="ChipTraderButton" to="." method="_on_chip_trader_button_pressed"]
+[connection signal="pressed" from="SmugglerButton" to="." method="_on_smuggler_button_pressed"]

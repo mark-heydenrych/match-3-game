@@ -146,6 +146,25 @@ func recreate_chip_buttons():
 	create_chip_buttons()
 	get_parent().save_state = "BLACK_MARKET\n" + black_market_to_json()
 
+func create_smuggler_buttons():
+	var half_shards = num_diamonds / 2
+	var smuggle_button = Button.new()
+	smuggle_button.text = "Smuggle remaining chips\nI keep " + str(num_diamonds - half_shards) + ", you'll start with " + str(half_shards)
+	smuggle_button.position = Vector2(1000, 150)
+	add_child(smuggle_button)
+	smuggle_button.pressed.connect(smuggle_shards)
+	upgrade_buttons.append(smuggle_button)
+
+func clear_smuggler_buttons():
+	for b in upgrade_buttons:
+		if (b != null):
+			b.queue_free()
+
+func recreate_smuggler_buttons():
+	clear_smuggler_buttons()
+	create_smuggler_buttons()
+	get_parent().save_state = "BLACK_MARKET\n" + black_market_to_json()
+
 func buy_card(upgrade_name, upgrade_cost, upgrade_index):
 	if (num_diamonds >= upgrade_cost):
 		set_num_diamonds(num_diamonds - upgrade_cost)
@@ -194,6 +213,14 @@ func unlock_side_panel():
 		get_parent().get_node("Globals").card_upgrades[0][2] = true
 		recreate_hacker_buttons()
 
+func smuggle_shards():
+	if (!active):
+		return
+	get_node("/root/BaseScene/AudioManager").play_click()
+	var half_shards = num_diamonds / 2
+	get_parent().get_node("Globals").starting_shards = half_shards
+	set_num_diamonds(0)
+	recreate_smuggler_buttons()
 
 func _on_hacker_button_pressed():
 	get_node("HackerSprite").visible = true
@@ -203,6 +230,8 @@ func _on_hacker_button_pressed():
 	get_node("BatteryButton").disabled = true
 	get_node("ChipTraderButton").visible = false
 	get_node("ChipTraderButton").disabled = true
+	get_node("SmugglerButton").visible = false
+	get_node("SmugglerButton").disabled = true
 	get_node("NewRunButton").visible = false
 	get_node("NewRunButton").disabled = true
 	get_node("MarketBackground").visible = false
@@ -218,6 +247,8 @@ func _on_battery_button_pressed():
 	get_node("BatteryButton").disabled = true
 	get_node("ChipTraderButton").visible = false
 	get_node("ChipTraderButton").disabled = true
+	get_node("SmugglerButton").visible = false
+	get_node("SmugglerButton").disabled = true
 	get_node("NewRunButton").visible = false
 	get_node("NewRunButton").disabled = true
 	get_node("MarketBackground").visible = false
@@ -233,6 +264,8 @@ func _on_chip_trader_button_pressed():
 	get_node("BatteryButton").disabled = true
 	get_node("ChipTraderButton").visible = false
 	get_node("ChipTraderButton").disabled = true
+	get_node("SmugglerButton").visible = false
+	get_node("SmugglerButton").disabled = true
 	get_node("NewRunButton").visible = false
 	get_node("NewRunButton").disabled = true
 	create_chip_buttons()
@@ -248,12 +281,33 @@ func _on_back_button_pressed():
 	get_node("BatteryButton").disabled = false
 	get_node("ChipTraderButton").visible = true
 	get_node("ChipTraderButton").disabled = false
+	get_node("SmugglerButton").visible = true
+	get_node("SmugglerButton").disabled = false
 	get_node("NewRunButton").visible = true
 	get_node("NewRunButton").disabled = false
 	get_node("HackerSprite").visible = false
 	get_node("BatterySprite").visible = false
 	get_node("ChipTraderSprite").visible = false
+	get_node("SmugglerSprite").visible = false
 	clear_battery_buttons()
 	clear_chip_buttons()
 	clear_hacker_buttons()
+	clear_smuggler_buttons()
+	pass # Replace with function body.
+
+
+func _on_smuggler_button_pressed():
+	get_node("SmugglerSprite").visible = true
+	get_node("HackerButton").visible = false
+	get_node("HackerButton").disabled = true
+	get_node("BatteryButton").visible = false
+	get_node("BatteryButton").disabled = true
+	get_node("ChipTraderButton").visible = false
+	get_node("ChipTraderButton").disabled = true
+	get_node("SmugglerButton").visible = false
+	get_node("SmugglerButton").disabled = true
+	get_node("NewRunButton").visible = false
+	get_node("NewRunButton").disabled = true
+	create_smuggler_buttons()
+	get_node("MarketBackground").visible = false
 	pass # Replace with function body.
