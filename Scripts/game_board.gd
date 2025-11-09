@@ -160,7 +160,6 @@ func _on_grid_end_turn(moved: bool):
 		get_node("SideBoard").reduce_card_durability()
 		set_grid_effects()
 	if (moved):
-		get_node("SideBoard/Helper").act()
 		if (get_node("Grid").round_matched >= 5):
 			if (get_node("Grid").round_matched >= 9):
 				get_node("GreatSprite").texture = preload("res://Art/Combo_outstanding.png")
