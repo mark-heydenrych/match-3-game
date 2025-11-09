@@ -53,6 +53,8 @@ func clean():
 		original = Vector2(x, y)
 		# 2. Get all the neighbours of that location, and keep track of the colour of the original
 		var orig_colour = get_node("/root/BaseScene/gameboard/Grid").all_pieces[x][y].colour
+		if (orig_colour == "Stone" || orig_colour == "XStone" || orig_colour == "Virus" || orig_colour == "XVirus" || orig_colour == "rotate" || orig_colour == "Xrotate"):
+			continue
 		var neighbours = get_node("/root/BaseScene/gameboard/Grid").get_neighbours(x, y)
 		# 3. If any neighbour has the same colour, return to step 1
 		var matching_colour = false
@@ -80,5 +82,9 @@ func clean():
 		else:
 			good_to_go = true
 			target = next_neighbours.pick_random()
+			var target_colour = get_node("/root/BaseScene/gameboard/Grid").all_pieces[target.x][target.y].colour
+			if (target_colour == "Stone" || target_colour == "XStone" || target_colour == "Virus" || target_colour == "XVirus" || target_colour == "rotate" || target_colour == "Xrotate"):
+				good_to_go = false
+				continue
 	# 6. Swap the original location with the chosen neighbour
 	get_node("/root/BaseScene/gameboard/Grid").move_pieces(original, target)
