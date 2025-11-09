@@ -534,6 +534,7 @@ func _input(event):
 					all_pieces[final_touch.x][final_touch.y].colour != "XVirus"):
 					moved = true
 					move_pieces(first_touch, final_touch)
+					get_parent().get_node("SideBoard/Helper").act()
 
 func rotate_blocks():
 	for x in width:
