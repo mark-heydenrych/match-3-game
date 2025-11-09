@@ -559,6 +559,7 @@ func rotate_blocks():
 					temp_piece = all_pieces[to_position.x][to_position.y]
 					all_pieces[to_position.x][to_position.y] = current_piece
 					current_piece.move_to(grid_to_pixel(to_position.x, to_position.y))
+	recolour_for_exclusion()
 
 
 func collapse_columns():
