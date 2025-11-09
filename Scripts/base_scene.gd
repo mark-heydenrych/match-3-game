@@ -146,6 +146,7 @@ func end_game(game_state):
 
 func start_black_market():
 	remove_child(get_node("status_screen"))
+	get_node("Globals").starting_shards = 0
 	var diamonds = get_node("gameboard").diamonds
 	get_node("gameboard").queue_free()
 	# Go to the black market between runs
@@ -174,6 +175,7 @@ func new_run():
 	game_board.setup_from_scratch()
 	game_board.set_num_turns(get_node("Globals").max_turns)
 	game_board.set_max_turns(get_node("Globals").max_turns)
+	game_board.add_diamonds(get_node("Globals").starting_shards)
 	game_board.game_finished.connect(end_game)
 	game_board.name = "gameboard"
 	get_node("/root/BaseScene/AudioManager").play_puzzle_music()
