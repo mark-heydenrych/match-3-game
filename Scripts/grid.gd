@@ -116,6 +116,12 @@ var num_debuffs: int = 0
 
 var exclusions = []
 
+# The rows and columns with conveyers
+var conveyers_right = []
+var conveyers_left = []
+var conveyers_down = []
+var conveyers_up = []
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	total_matched = 0
@@ -194,6 +200,7 @@ func setup_pieces():
 		remove_setup_matches()
 	#unmatch_all()
 	#add_exclusion_zones()
+	conveyers_right.append(3)
 	total_matched = 0
 	round_matched = 0
 
@@ -223,6 +230,18 @@ func recolour_for_exclusion():
 	for e in exclusions:
 		var grid_position = pixel_to_grid(e.position.x, e.position.y)
 		all_pieces[grid_position.x][grid_position.y].colour = "X" + all_pieces[grid_position.x][grid_position.y].colour
+
+func run_conveyers():
+	for y in conveyers_right:
+		var temp_orig
+		var temp_target = all_pieces[0][y]
+		for x in range(width):
+			temp_orig = temp_target
+			var target = (x + 1) % width
+			temp_target = all_pieces[target][y]
+			all_pieces[target][y] = temp_orig
+			all_pieces[target][y].move_to(grid_to_pixel(target, y))
+		
 
 func shuffle():
 	var indexes = range(72)
@@ -515,6 +534,8 @@ func _input(event):
 			shuffle()
 		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_R:
 			rotate_blocks()
+		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_C:
+			run_conveyers()
 		if event is InputEventMouseButton and event.is_pressed():
 			var pos = get_global_mouse_position()
 			first_touch = pixel_to_grid(pos.x, pos.y)
