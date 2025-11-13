@@ -176,6 +176,7 @@ func remove_setup_matches():
 
 func setup_pieces():
 	remove_exclusion_zones()
+	remove_conveyers()
 	for i in width:
 		for j in height:
 			var k = randi_range(0, possible_pieces.size() - 1)
@@ -202,6 +203,10 @@ func setup_pieces():
 	#add_exclusion_zones()
 	total_matched = 0
 	round_matched = 0
+
+func remove_conveyers():
+	conveyers_left.clear()
+	conveyers_right.clear()
 
 func add_conveyer_left(row):
 	conveyers_left.append(row)
@@ -269,9 +274,11 @@ func run_conveyers():
 		for x in indexes:
 			temp_orig = temp_target
 			var target = (x - 1 + width) % width
+			print("Moving " + str(x) + " to " + str(target))
 			temp_target = all_pieces[target][y]
 			all_pieces[target][y] = temp_orig
 			all_pieces[target][y].move_to(grid_to_pixel(target, y))
+	recolour_for_exclusion()
 
 func shuffle():
 	var indexes = range(72)
@@ -470,6 +477,7 @@ func move_pieces(position1, position2):
 		all_pieces[position2.x][position2.y] = piece1
 		recolour_for_exclusion()
 		rotate_blocks()
+		run_conveyers()
 		if (check_for_matches()):
 			active = false
 			clear_timer.start()
