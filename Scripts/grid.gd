@@ -200,7 +200,8 @@ func setup_pieces():
 		remove_setup_matches()
 	#unmatch_all()
 	#add_exclusion_zones()
-	conveyers_right.append(3)
+	conveyers_left.append(3)
+	conveyers_right.append(6)
 	total_matched = 0
 	round_matched = 0
 
@@ -241,7 +242,17 @@ func run_conveyers():
 			temp_target = all_pieces[target][y]
 			all_pieces[target][y] = temp_orig
 			all_pieces[target][y].move_to(grid_to_pixel(target, y))
-		
+	for y in conveyers_left:
+		var temp_orig
+		var temp_target = all_pieces[6][y]
+		var indexes = range(width + 1)
+		indexes.reverse()
+		for x in indexes:
+			temp_orig = temp_target
+			var target = (x - 1 + width) % width
+			temp_target = all_pieces[target][y]
+			all_pieces[target][y] = temp_orig
+			all_pieces[target][y].move_to(grid_to_pixel(target, y))
 
 func shuffle():
 	var indexes = range(72)
