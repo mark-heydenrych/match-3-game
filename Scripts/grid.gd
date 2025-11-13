@@ -200,10 +200,29 @@ func setup_pieces():
 		remove_setup_matches()
 	#unmatch_all()
 	#add_exclusion_zones()
-	conveyers_left.append(3)
-	conveyers_right.append(6)
 	total_matched = 0
 	round_matched = 0
+
+func add_conveyer_left(row):
+	conveyers_left.append(row)
+	for x in range(width):
+		var position = grid_to_pixel(x, row)
+		var sprite = Sprite2D.new()
+		sprite.texture = preload("res://Art/arrow.png")
+		sprite.rotation_degrees = 180
+		sprite.position = position
+		add_child(sprite)
+		move_child(sprite, -1)
+
+func add_conveyer_right(row):
+	conveyers_right.append(row)
+	for x in range(width):
+		var position = grid_to_pixel(x, row)
+		var sprite = Sprite2D.new()
+		sprite.texture = preload("res://Art/arrow.png")
+		sprite.position = position
+		add_child(sprite)
+		move_child(sprite, -1)
 
 func add_exclusion_zones():
 	for i in range(5):
