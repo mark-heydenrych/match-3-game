@@ -33,6 +33,7 @@ func act():
 		get_node("OutputLabel").push_outline_size(4)
 		get_node("OutputLabel").push_font_size(24)
 		get_node("OutputLabel").append_text(line)
+		get_node("OutputLabel").visible_characters = 0
 		if (active_lines.is_empty()):
 			active_lines = lines.duplicate()
 			active_lines.shuffle()
