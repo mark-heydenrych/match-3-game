@@ -11,14 +11,14 @@ offset_left = 200.0
 offset_top = 100.0
 offset_right = 280.0
 offset_bottom = 131.0
-text = "Recharge: +5 Turns"
+text = "1 Shard: Recharge: +5 Turns"
 
 [node name="DebugButton" type="Button" parent="."]
 offset_left = 200.0
 offset_top = 200.0
 offset_right = 258.0
 offset_bottom = 231.0
-text = "Debug (Remove Debuffs)"
+text = "1 Shard: Debug (Remove Debuffs)"
 
 [node name="LeaveButton" type="Button" parent="."]
 offset_left = 200.0
