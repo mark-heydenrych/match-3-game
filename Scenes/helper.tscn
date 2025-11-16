@@ -23,4 +23,5 @@ offset_top = -50.0
 offset_right = 556.0
 offset_bottom = 53.0
 bbcode_enabled = true
+visible_characters_behavior = 1
 metadata/_edit_use_anchors_ = true

@@ -19,10 +19,6 @@ func _ready():
 	pass # Replace with function body.
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
 func act():
 	if numbers[0] == 0:
 		clean()
@@ -33,6 +29,7 @@ func act():
 		get_node("OutputLabel").push_outline_size(4)
 		get_node("OutputLabel").push_font_size(24)
 		get_node("OutputLabel").append_text(line)
+		get_node("OutputLabel").visible_characters = 0
 		if (active_lines.is_empty()):
 			active_lines = lines.duplicate()
 			active_lines.shuffle()

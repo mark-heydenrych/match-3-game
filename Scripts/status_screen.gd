@@ -1,5 +1,7 @@
 extends Node2D
 
+var time_delta = 0
+var timespan = 0.05
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -8,6 +10,14 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if (get_node("StatusLabel").visible_characters == -1):
+		return
+	time_delta += delta
+	if (time_delta >= timespan):
+		time_delta -= timespan
+		get_node("StatusLabel").visible_characters = get_node("StatusLabel").visible_characters + 1
+		if (get_node("StatusLabel").visible_characters == len(get_node("StatusLabel").text)):
+			get_node("StatusLabel").visible_characters = -1
 	pass
 
 func status_from_score(score):
@@ -33,3 +43,4 @@ func set_label_text(score):
 	get_node("StatusLabel").push_color(Color.BLACK)
 	get_node("StatusLabel").push_font_size(20)
 	get_node("StatusLabel").append_text(status_from_score(score))
+	get_node("StatusLabel").visible_characters = 0
