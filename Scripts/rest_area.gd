@@ -25,7 +25,7 @@ func _on_recharge_button_pressed():
 		print("Recharging")
 		get_parent().recharge()
 		get_node("RechargeButton").text = str(recharge_cost) + " Shards: Recharge: +5 Turns"
-		get_node("DebugButton").text = str(recharge_cost) + " Shard: Debug (Remove Debuffs)"
+		get_node("DebugButton").text = str(recharge_cost) + " Shards: Debug (Remove Debuffs)"
 	pass # Replace with function body.
 
 
@@ -39,7 +39,7 @@ func _on_debug_button_pressed():
 		print("Debugging")
 		get_parent().get_node("SideBoard").remove_all_debuffs()
 		get_node("RechargeButton").text = str(recharge_cost) + " Shards: Recharge: +5 Turns"
-		get_node("DebugButton").text = str(recharge_cost) + " Shard: Debug (Remove Debuffs)"
+		get_node("DebugButton").text = str(recharge_cost) + " Shards: Debug (Remove Debuffs)"
 	pass # Replace with function body.
 
 
