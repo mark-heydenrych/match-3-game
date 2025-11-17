@@ -30,7 +30,11 @@ func _ready():
 		cards.append(null)
 	setup_card_slots()
 	print("Unlocked: " + str(get_parent().get_parent().get_node("Globals").sideboard_unlocked))
-	var helper = preload("res://Scenes/clippy_helper.tscn").instantiate()
+	var helper
+	if (get_parent().get_parent().get_node("Globals").starting_helper == "Chippy"):
+		helper = preload("res://Scenes/clippy_helper.tscn").instantiate()
+	if (get_parent().get_parent().get_node("Globals").starting_helper == "Cleaner"):
+		helper = preload("res://Scenes/cleaner_helper.tscn").instantiate()
 	helper.scale *= 0.75
 	add_child(helper)
 	move_child(helper, -1)

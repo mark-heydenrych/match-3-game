@@ -4,10 +4,12 @@ extends Node2D
 @export var num_diamonds: int = 0
 var active = true
 var upgrade_buttons = []
+var helper_bought = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	#create_buttons()
+	get_parent().get_node("Globals").starting_helper = "Chippy"
 	get_parent().save_state = "BLACK_MARKET\n" + black_market_to_json()
 
 
@@ -83,11 +85,23 @@ func create_hacker_buttons():
 		# If it isn't available yet, or if it has already been bought, disable it
 		if (slot[2] == false || slot[3] == true):
 			slot_button.disabled = true
+	var helper_button = Button.new()
+	helper_button.text = "10: Unlock a special helper\nfor the next round"
+	helper_button.name = "HelperButton"
+	helper_button.position = Vector2(1000, y_pos)
+	if (helper_bought == true || get_parent().get_node("Globals").sideboard_unlocked == false):
+		helper_button.disabled = true
+	else:
+		helper_button.disabled = false
+	add_child(helper_button)
+	helper_button.pressed.connect(buy_helper.bind(10))
+	upgrade_buttons.append(helper_button)
 
 func clear_hacker_buttons():
 	for b in upgrade_buttons:
 		if (b != null):
 			b.queue_free()
+	upgrade_buttons.clear()
 
 func recreate_hacker_buttons():
 	clear_hacker_buttons()
@@ -114,6 +128,7 @@ func clear_battery_buttons():
 	for b in upgrade_buttons:
 		if (b != null):
 			b.queue_free()
+	upgrade_buttons.clear()
 
 func recreate_battery_buttons():
 	clear_battery_buttons()
@@ -140,6 +155,7 @@ func clear_chip_buttons():
 	for b in upgrade_buttons:
 		if (b != null):
 			b.queue_free()
+	upgrade_buttons.clear()
 
 func recreate_chip_buttons():
 	clear_chip_buttons()
@@ -212,6 +228,15 @@ func unlock_side_panel():
 		get_parent().get_node("Globals").battery_upgrades[0][2] = true
 		get_parent().get_node("Globals").card_upgrades[0][2] = true
 		recreate_hacker_buttons()
+
+func buy_helper(cost):
+	if (!active):
+		return
+	get_node("/root/BaseScene/AudioManager").play_click()
+	if (num_diamonds >= cost):
+		set_num_diamonds(num_diamonds - cost)
+		get_parent().get_node("Globals").starting_helper = "Cleaner"
+		helper_bought = true
 
 func smuggle_shards():
 	if (!active):

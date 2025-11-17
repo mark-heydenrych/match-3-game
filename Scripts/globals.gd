@@ -52,6 +52,7 @@ var card_upgrades= [
 
 var sideboard_unlocked = false
 
+var starting_helper: String = "Chippy"
 var starting_shards = 0
 
 # The deck at the start of a round - will be updated when buying new cards between rounds
