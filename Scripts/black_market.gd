@@ -90,6 +90,7 @@ func create_hacker_buttons():
 	helper_button.name = "HelperButton"
 	helper_button.position = Vector2(1000, y_pos)
 	if (helper_bought == true || get_parent().get_node("Globals").sideboard_unlocked == false):
+		print("Disabling helper button...")
 		helper_button.disabled = true
 	else:
 		helper_button.disabled = false
@@ -237,6 +238,7 @@ func buy_helper(cost):
 		set_num_diamonds(num_diamonds - cost)
 		get_parent().get_node("Globals").starting_helper = "Cleaner"
 		helper_bought = true
+		recreate_hacker_buttons()
 
 func smuggle_shards():
 	if (!active):

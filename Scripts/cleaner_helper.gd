@@ -84,4 +84,4 @@ func clean():
 				good_to_go = false
 				continue
 	# 6. Swap the original location with the chosen neighbour
-	get_node("/root/BaseScene/gameboard/Grid").move_pieces(original, target)
+	get_node("/root/BaseScene/gameboard/Grid").move_pieces_helper(original, target)

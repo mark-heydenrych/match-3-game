@@ -122,6 +122,8 @@ var conveyers_left = []
 var conveyers_down = []
 var conveyers_up = []
 
+var helper_move = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	total_matched = 0
@@ -463,11 +465,24 @@ func pixel_to_grid(pixel_x, pixel_y):
 func _process(delta):
 	pass
 
-func move_pieces(position1, position2):
+func move_pieces_helper(position1, position2):
 	var direction: Vector2 = position2 - position1
 	if (direction.length() == 1 || active_effects.has("TRANSLOCATOR")):
 		get_node("/root/BaseScene/AudioManager").play_swish()
-		if (!active_effects.has("TIME_STOP")):
+		var piece1 = all_pieces[position1.x][position1.y]
+		var piece2 = all_pieces[position2.x][position2.y]
+		piece1.move_to(grid_to_pixel(position2.x, position2.y))
+		piece2.move_to(grid_to_pixel(position1.x, position1.y))
+		all_pieces[position1.x][position1.y] = piece2
+		all_pieces[position2.x][position2.y] = piece1
+		recolour_for_exclusion()
+
+func move_pieces(position1, position2, moved_by_helper = false):
+	helper_move = moved_by_helper
+	var direction: Vector2 = position2 - position1
+	if (direction.length() == 1 || active_effects.has("TRANSLOCATOR")):
+		get_node("/root/BaseScene/AudioManager").play_swish()
+		if (!active_effects.has("TIME_STOP") && !moved_by_helper):
 			get_parent().reduce_turns(1)
 		var piece1 = all_pieces[position1.x][position1.y]
 		var piece2 = all_pieces[position2.x][position2.y]
@@ -487,14 +502,15 @@ func move_pieces(position1, position2):
 			else:
 				get_parent().check_win(total_matched)
 			countdown_viruses()
-			end_turn.emit(moved)
+			if (!moved_by_helper):
+				end_turn.emit(moved)
 	recolour_for_exclusion()
 
 func recheck_matches():
 	if (check_for_matches()):
 		active = false
 		clear_timer.start()
-	else:
+	elif (helper_move == false):
 		countdown_viruses()
 		end_turn.emit(moved)
 
@@ -592,8 +608,8 @@ func _input(event):
 					all_pieces[first_touch.x][first_touch.y].colour != "XVirus" && 
 					all_pieces[final_touch.x][final_touch.y].colour != "XVirus"):
 					moved = true
-					move_pieces(first_touch, final_touch)
 					get_parent().get_node("SideBoard/Helper").act()
+					move_pieces(first_touch, final_touch)
 
 func rotate_blocks():
 	for x in width:
@@ -741,7 +757,7 @@ func _on_refill_timer_timeout():
 	# If the refill is caused by a virus, we don't need to age the perks/debuffs
 	if (refill_caused_by_virus):
 		end_turn.emit(false)
-	else:
+	elif (helper_move == false):
 		end_turn.emit(moved)
 	moved = false
 	refill_caused_by_virus = false
