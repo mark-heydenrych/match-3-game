@@ -122,6 +122,9 @@ var conveyers_left = []
 var conveyers_down = []
 var conveyers_up = []
 
+# The target locations. Exclusive to boss levels
+var targets = []
+
 var helper_move = false
 
 # Called when the node enters the scene tree for the first time.
@@ -205,6 +208,29 @@ func setup_pieces():
 	#add_exclusion_zones()
 	total_matched = 0
 	round_matched = 0
+
+func add_target(x, y):
+	var target = preload("res://Scenes/target.tscn").instantiate()
+	target.x = x
+	target.y = y
+	target.position = grid_to_pixel(x, y)
+	add_child(target)
+	move_child(target, -1)
+	target.timeout.connect(timeout_target)
+	targets.append(target)
+
+func timeout_target():
+	var removed_targets = []
+	for i in range(targets.size()):
+		var t = targets[i]
+		if t.time <= 0:
+			print("Target expired at " + all_pieces[t.x][t.y].colour)
+			t.queue_free()
+			removed_targets.append(i)
+	# Remove the targets (in reverse order to avoid index issues)
+	removed_targets.reverse()
+	for i in removed_targets:
+		targets.remove_at(i)
 
 func remove_conveyers():
 	conveyers_left.clear()
@@ -501,6 +527,7 @@ func move_pieces(position1, position2, moved_by_helper = false):
 				get_parent().check_win_challenge(count_challenge_blocks())
 			else:
 				get_parent().check_win(total_matched)
+			countdown_targets()
 			countdown_viruses()
 			if (!moved_by_helper):
 				end_turn.emit(moved)
@@ -512,6 +539,7 @@ func recheck_matches():
 		clear_timer.start()
 	elif (helper_move == false):
 		countdown_viruses()
+		countdown_targets()
 		end_turn.emit(moved)
 
 func clear_matches():
@@ -742,6 +770,7 @@ func _on_clear_timer_timeout():
 
 func _on_refill_timer_timeout():
 	refill_board()
+	countdown_targets()
 	countdown_viruses()
 	var multiplier = score_multiplier[min(round_matched, 12)] * perk_multiplier * temp_multiplier
 	temp_multiplier = 1.0
@@ -879,6 +908,11 @@ func add_effect(effect):
 func remove_effect(effect):
 	active_effects.erase(effect)
 	process_effects()
+
+func countdown_targets():
+	print("Counting down targets...")
+	for t in targets:
+		t.countdown()
 
 func countdown_viruses():
 	if (active_effects.has("TIME_STOP")):
