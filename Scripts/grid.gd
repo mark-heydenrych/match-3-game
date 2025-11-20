@@ -230,6 +230,16 @@ func timeout_target():
 	# Remove the targets (in reverse order to avoid index issues)
 	removed_targets.reverse()
 	for i in removed_targets:
+		var x = targets[i].x
+		var y = targets[i].y
+		all_pieces[x][y].move_to_bag()
+		#all_pieces[x][y].queue_free()
+		all_pieces[x][y] = null_piece.instantiate()
+		# Check the row above - if it is not empty, then we need to collapse the columns
+		if (y > 0 && all_pieces[x][y - 1].colour != "null"):
+			collapse_needed = true
+		if (collapse_needed):
+			collapse_timer.start()
 		targets.remove_at(i)
 
 func remove_conveyers():
@@ -910,6 +920,8 @@ func remove_effect(effect):
 	process_effects()
 
 func countdown_targets():
+	if (active_effects.has("TIME_STOP")):
+		return
 	print("Counting down targets...")
 	for t in targets:
 		t.countdown()
