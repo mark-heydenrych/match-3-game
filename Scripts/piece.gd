@@ -34,6 +34,8 @@ func matches(other_colour: String):
 	# Used for exclusion zones
 	if ("X" in colour) || ("X" in other_colour):
 		return false
+	elif (colour == "bomb" || other_colour == "bomb"):
+		return false
 	return (colour in other_colour) || (other_colour in colour)
 
 func clone():
