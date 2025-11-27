@@ -924,6 +924,12 @@ func countdown_targets():
 		return
 	print("Counting down targets...")
 	for t in targets:
+		var x = t.x
+		var y = t.y
+		if (all_pieces[x][y].colour == "bomb" || (all_pieces[x][y].colour == "Stone" && all_pieces[x][y].effect == "GOLD")):
+			all_pieces[x][y].matched = true
+			# Make sure it expires this turn
+			t.time = 1
 		t.countdown()
 
 func countdown_viruses():
