@@ -926,7 +926,7 @@ func countdown_targets():
 	for t in targets:
 		var x = t.x
 		var y = t.y
-		if (all_pieces[x][y].colour == "bomb" || (all_pieces[x][y].colour == "Stone" && all_pieces[x][y].effect == "GOLD")):
+		if (all_pieces[x][y].colour == "bomb" || all_pieces[x][y].colour == "bonus"):
 			all_pieces[x][y].matched = true
 			# Make sure it expires this turn
 			t.time = 1
