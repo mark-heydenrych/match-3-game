@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://4hccjp5tk2n6"]
+
+[ext_resource type="PackedScene" uid="uid://bepdx77askp6h" path="res://Scenes/piece.tscn" id="1_f20fa"]
+[ext_resource type="Texture2D" uid="uid://dsm6kaxeqfhx4" path="res://Art/money.png" id="2_m0x57"]
+
+[node name="Piece" instance=ExtResource("1_f20fa")]
+colour = "bonus"
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_m0x57")
