@@ -36,6 +36,8 @@ func matches(other_colour: String):
 		return false
 	elif (colour == "bomb" || other_colour == "bomb"):
 		return false
+	elif (colour == "bonus" || other_colour == "bonus"):
+		return false
 	return (colour in other_colour) || (other_colour in colour)
 
 func clone():
