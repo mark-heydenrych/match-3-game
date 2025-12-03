@@ -127,6 +127,10 @@ var targets = []
 
 var helper_move = false
 
+# Used for boss levels
+var bombs_matched = 0
+var bonuses_matched = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	total_matched = 0
@@ -224,7 +228,10 @@ func timeout_target():
 	for i in range(targets.size()):
 		var t = targets[i]
 		if t.time <= 0:
-			print("Target expired at " + all_pieces[t.x][t.y].colour)
+			if (all_pieces[t.x][t.y].colour == "bomb"):
+				bombs_matched += 1
+			if (all_pieces[t.x][t.y].colour == "bonus"):
+				bonuses_matched += 1
 			t.queue_free()
 			removed_targets.append(i)
 	# Remove the targets (in reverse order to avoid index issues)
