@@ -19,6 +19,7 @@ var total_matched: int = 0
 var round_matched: int = 0
 var active: bool = true
 var challenge_level: bool = false
+var boss_level: bool = false
 
 var perk_multiplier = 1.0
 var temp_multiplier = 1.0
@@ -63,6 +64,7 @@ var tetris_pieces = [TETRIS_O, TETRIS_T_0, TETRIS_T_90, TETRIS_T_180, TETRIS_T_2
 
 # Indicates if we need to collapse columns after a match
 var collapse_needed: bool
+var new_target_needed = false
 @onready var collapse_timer = $Collapse_Timer
 @onready var clear_timer = $Clear_Timer
 @onready var refill_timer = $Refill_Timer
@@ -93,6 +95,8 @@ var gold_piece = preload("res://Scenes/gold_piece.tscn")
 var diamond_piece = preload("res://Scenes/diamond_piece.tscn")
 var rainbow_piece = preload("res://Scenes/rainbow_piece.tscn")
 var rotate_piece = preload("res://Scenes/rotate_piece.tscn")
+var bomb_piece = preload("res://Scenes/bomb_piece.tscn")
+var bonus_piece = preload("res://Scenes/bonus_piece.tscn")
 
 var special_pieces = [sand_piece, stone_piece, metal_piece]
 var hard_pieces = [sand_piece, stone_piece, metal_piece]
@@ -213,6 +217,25 @@ func setup_pieces():
 	total_matched = 0
 	round_matched = 0
 
+func setup_for_boss():
+	add_target(randi_range(0, width - 1), randi_range(0, height - 1))
+	for i in range(5):
+		var x = randi_range(0, width - 1)
+		var y = randi_range(0, height - 1)
+		all_pieces[x][y].queue_free()
+		var new_piece = bomb_piece.instantiate()
+		new_piece.position = grid_to_pixel(x, y)
+		all_pieces[x][y] = new_piece
+		add_child(new_piece)
+	for i in range(4):
+		var x = randi_range(0, width - 1)
+		var y = randi_range(0, height - 1)
+		all_pieces[x][y].queue_free()
+		var new_piece = bonus_piece.instantiate()
+		new_piece.position = grid_to_pixel(x, y)
+		all_pieces[x][y] = new_piece
+		add_child(new_piece)
+
 func add_target(x, y):
 	var target = preload("res://Scenes/target.tscn").instantiate()
 	target.x = x
@@ -245,8 +268,13 @@ func timeout_target():
 		# Check the row above - if it is not empty, then we need to collapse the columns
 		if (y > 0 && all_pieces[x][y - 1].colour != "null"):
 			collapse_needed = true
+			new_target_needed = true
 		if (collapse_needed):
 			collapse_timer.start()
+		# If we are in the top row, we don't need a collapse but we do need to refill
+		if (y == 0):
+			refill_timer.start()
+			new_target_needed = true
 		targets.remove_at(i)
 
 func remove_conveyers():
@@ -788,6 +816,10 @@ func _on_clear_timer_timeout():
 func _on_refill_timer_timeout():
 	refill_board()
 	countdown_targets()
+	if (new_target_needed):
+		# Add a new target for the removed one
+		add_target(randi_range(0, width - 1), randi_range(0, height - 1))
+		new_target_needed = false
 	countdown_viruses()
 	var multiplier = score_multiplier[min(round_matched, 12)] * perk_multiplier * temp_multiplier
 	temp_multiplier = 1.0
@@ -798,6 +830,8 @@ func _on_refill_timer_timeout():
 	print("Total matched: " + str(total_matched))
 	if (challenge_level):
 		get_parent().check_win_challenge(count_challenge_blocks())
+	elif (boss_level):
+		get_parent().check_win_boss(bombs_matched, bonuses_matched)
 	else:
 		get_parent().check_win(total_matched)
 	# If the refill is caused by a virus, we don't need to age the perks/debuffs
@@ -960,7 +994,7 @@ func countdown_viruses():
 	activate_debuffs()
 	num_debuffs = 0
 
-func set_level(level, challenge = false):
+func set_level(level, challenge = false, boss = false):
 	if (level >= 3):
 		num_specials = level / 2
 		range_specials = min((level - 1) / 2, special_pieces.size())
@@ -1036,6 +1070,10 @@ func set_level(level, challenge = false):
 				else:
 					exclude_column(lines[i])
 		challenge_level = true
+	if (boss):
+		print("Boss level started")
+		setup_for_boss()
+		boss_level = true
 
 func exclude_row(row):
 	for x in range(width):

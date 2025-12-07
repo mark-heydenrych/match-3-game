@@ -111,6 +111,15 @@ func check_win_challenge(num_blocks):
 	elif turns_left >= 0 && num_blocks == 0:
 		level_select()
 
+func check_win_boss(bombs_matched, bonuses_matched):
+	print("Check win boss: " + str(bombs_matched) + ", " + str(bonuses_matched))
+	if turns_left <= 0:
+		print("You lose!")
+		game_finished.emit("LOSE")
+	elif turns_left >= 0 && (bombs_matched >= 3 || bonuses_matched >= 3):
+		print("You beat the boss!")
+		level_select()
+
 func level_select():
 	if (levelSelect == null):
 		levelSelect = preload("res://Scenes/level_select.tscn").instantiate()
@@ -256,6 +265,22 @@ func navigate(level):
 			grid.clear_board()
 			grid.setup_pieces()
 			grid.set_level(puzzle_level, true)
+		"Boss":
+			puzzle_level += 1
+			var grid: Grid = preload("res://Scenes/grid.tscn").instantiate()
+			add_child(grid)
+			grid.name = "Grid"
+			grid.visible = true
+			grid.active = true
+			grid.end_turn.connect(_on_grid_end_turn)
+			# reset_score()
+			goal *= 1.5
+			get_node("Goal_Label").text = "Goal: " + str(goal)
+			transition_to(grid)
+			set_grid_effects()
+			grid.clear_board()
+			grid.setup_pieces()
+			grid.set_level(puzzle_level, false, true)
 		"Rest Area":
 			var rest: RestArea = preload("res://Scenes/rest_area.tscn").instantiate()
 			add_child(rest)
