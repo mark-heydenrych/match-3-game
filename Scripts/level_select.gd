@@ -4,7 +4,7 @@ extends Node2D
 @export var active = false
 
 # All possible rooms
-var extra_rooms = ["Shop", "Rest Area", "Challenge"]
+var extra_rooms = ["Boss", "Shop", "Rest Area", "Challenge"]
 # The rooms we can currently navigate to
 var rooms = ["Puzzle"]
 # The index of when we should get a special room
