@@ -803,11 +803,31 @@ func count_matches():
 			if (all_pieces[i][j].matched):
 				round_matched += 1
 
+func count_vertical_matches():
+	for i in width:
+		var col_matches = 0
+		for j in height:
+			if (all_pieces[i][j].matched):
+				col_matches += 1
+		if (col_matches >= 3):
+			print(str(col_matches) + " matches in column " + str(i))
+
+func count_horizontal_matches():
+	for j in height:
+		var row_matches = 0
+		for i in width:
+			if (all_pieces[i][j].matched):
+				row_matches += 1
+		if (row_matches >= 3):
+			print(str(row_matches) + " matches in row " + str(j))
+
 func _on_collapse_timer_timeout():
 	collapse_columns()
 	collapse_needed = false
 
 func _on_clear_timer_timeout():
+	count_vertical_matches()
+	count_horizontal_matches()
 	clear_matches()
 	clear_broken()
 	var pitch_shift = 0.7 + (round_matched / 10.0)
