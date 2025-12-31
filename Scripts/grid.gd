@@ -17,12 +17,16 @@ var refill_caused_by_virus = false
 
 var total_matched: int = 0
 var round_matched: int = 0
+var vertical_matched: int = 0
+var horizontal_matched: int = 0
 var active: bool = true
 var challenge_level: bool = false
 var boss_level: bool = false
 
 var perk_multiplier = 1.0
 var temp_multiplier = 1.0
+var vertical_multiplier = 1.0
+var horizontal_multiplier = 1.0
 
 var score_multiplier = [0, 1, 1, 1, 1.25, 1.6, 2.17, 3, 4.25, 6.11, 8.9, 13.09, 19.42]
 
@@ -802,6 +806,8 @@ func count_matches():
 		for j in height:
 			if (all_pieces[i][j].matched):
 				round_matched += 1
+	count_vertical_matches()
+	count_horizontal_matches()
 
 func count_vertical_matches():
 	for i in width:
@@ -810,7 +816,7 @@ func count_vertical_matches():
 			if (all_pieces[i][j].matched):
 				col_matches += 1
 		if (col_matches >= 3):
-			print(str(col_matches) + " matches in column " + str(i))
+			vertical_matched += col_matches
 
 func count_horizontal_matches():
 	for j in height:
@@ -819,7 +825,7 @@ func count_horizontal_matches():
 			if (all_pieces[i][j].matched):
 				row_matches += 1
 		if (row_matches >= 3):
-			print(str(row_matches) + " matches in row " + str(j))
+			horizontal_matched += row_matches
 
 func _on_collapse_timer_timeout():
 	collapse_columns()
@@ -843,11 +849,18 @@ func _on_refill_timer_timeout():
 	countdown_viruses()
 	var multiplier = score_multiplier[min(round_matched, 12)] * perk_multiplier * temp_multiplier
 	temp_multiplier = 1.0
+	var base_score = round_matched * multiplier * 100
+	print("Base score = " + str(base_score))
+	for v in vertical_matched:
+		base_score *= vertical_multiplier
+	for h in horizontal_matched:
+		base_score *= horizontal_multiplier
+	print("Multiplied score = " + str(base_score))
 	get_parent().add_diamonds(round_matched - 3)
-	get_parent().add_score(round_matched * multiplier * 100)
-	print("This round: " + str(round_matched * multiplier * 100))
+	get_parent().add_score(base_score)
 	total_matched += round_matched
 	print("Total matched: " + str(total_matched))
+	
 	if (challenge_level):
 		get_parent().check_win_challenge(count_challenge_blocks())
 	elif (boss_level):
@@ -862,6 +875,8 @@ func _on_refill_timer_timeout():
 	moved = false
 	refill_caused_by_virus = false
 	round_matched = 0
+	vertical_matched = 0
+	horizontal_matched = 0
 	active = true
 
 func count_challenge_blocks():
