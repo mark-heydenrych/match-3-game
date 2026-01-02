@@ -25,8 +25,6 @@ var boss_level: bool = false
 
 var perk_multiplier = 1.0
 var temp_multiplier = 1.0
-var vertical_multiplier = 1.0
-var horizontal_multiplier = 1.0
 
 var score_multiplier = [0, 1, 1, 1, 1.25, 1.6, 2.17, 3, 4.25, 6.11, 8.9, 13.09, 19.42]
 
@@ -852,9 +850,9 @@ func _on_refill_timer_timeout():
 	var base_score = round_matched * multiplier * 100
 	print("Base score = " + str(base_score))
 	for v in vertical_matched:
-		base_score *= vertical_multiplier
+		base_score *= get_parent().vertical_multiplier
 	for h in horizontal_matched:
-		base_score *= horizontal_multiplier
+		base_score *= get_parent().horizontal_multiplier
 	print("Multiplied score = " + str(base_score))
 	get_parent().add_diamonds(round_matched - 3)
 	get_parent().add_score(base_score)

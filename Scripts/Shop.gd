@@ -9,7 +9,9 @@ var y_tick = 64
 
 # Items in the shop - Name, Cost... (more later)
 var shop_items = [ShopItem.new(12, "Battery Pack", null),
-				  ShopItem.new(20, "Big Battery Pack", null)
+				  ShopItem.new(20, "Big Battery Pack", null),
+				  ShopItem.new(30, "Improve Horizontal Efficiency", null),
+				  ShopItem.new(30, "Improve Vertical Efficiency", null)
 				  ]
 var items_for_sale = []
 

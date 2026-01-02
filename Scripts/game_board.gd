@@ -11,6 +11,8 @@ var score: int = 0
 var goal: int = 10
 var goal_score = 10000000
 var puzzle_level = 1
+var vertical_multiplier = 1.0
+var horizontal_multiplier = 1.0
 
 # All the cards/chips 
 var deck = []
@@ -404,6 +406,10 @@ func shop(shop_item: ShopItem):
 		increase_max_turns(10)
 		recharge()
 		recharge()
+	if (shop_item.item_name == "Improve Horizontal Efficiency"):
+		horizontal_multiplier += 0.1
+	if (shop_item.item_name == "Improve Vertical Efficiency"):
+		vertical_multiplier += 0.1
 	if (shop_item.card != null):
 		deck.append(shop_item.card)
 
