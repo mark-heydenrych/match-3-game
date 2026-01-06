@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://botqyfkyyotyj"]
+
+[ext_resource type="Texture2D" uid="uid://bf57cotcrngex" path="res://Art/static.png" id="1_mrw14"]
+
+[node name="ObscuredZone" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_mrw14")

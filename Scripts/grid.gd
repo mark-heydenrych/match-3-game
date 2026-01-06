@@ -128,6 +128,9 @@ var conveyers_left = []
 var conveyers_down = []
 var conveyers_up = []
 
+# Areas that are to be obscured
+var obscured_blocks = []
+
 # The target locations. Exclusive to boss levels
 var targets = []
 
@@ -190,6 +193,7 @@ func remove_setup_matches():
 				k = (k + 1) % (refill_pieces.size())
 
 func setup_pieces():
+	remove_obscured()
 	remove_exclusion_zones()
 	remove_conveyers()
 	for i in width:
@@ -216,6 +220,7 @@ func setup_pieces():
 		remove_setup_matches()
 	#unmatch_all()
 	#add_exclusion_zones()
+	#add_obscured()
 	total_matched = 0
 	round_matched = 0
 
@@ -278,6 +283,22 @@ func timeout_target():
 			refill_timer.start()
 			new_target_needed = true
 		targets.remove_at(i)
+
+func add_obscured():
+	for i in range(5):
+		var x = randi_range(0, width - 1)
+		var y = randi_range(0, height - 1)
+		var obscure_pos = grid_to_pixel(x, y)
+		var obscured = preload("res://Scenes/obscured_zone.tscn").instantiate()
+		obscured.position = obscure_pos
+		add_child(obscured)
+		move_child(obscured, -1)
+		obscured_blocks.append(obscured)
+
+func remove_obscured():
+	for o in obscured_blocks:
+		remove_child(o)
+	obscured_blocks = []
 
 func remove_conveyers():
 	conveyers_left.clear()
