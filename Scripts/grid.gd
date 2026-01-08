@@ -64,6 +64,14 @@ var tetris_pieces = [TETRIS_O, TETRIS_T_0, TETRIS_T_90, TETRIS_T_180, TETRIS_T_2
 					 TETRIS_J_0, TETRIS_J_90, TETRIS_J_180, TETRIS_J_270,
 					 TETRIS_L_0, TETRIS_L_90, TETRIS_L_180, TETRIS_L_270]
 
+# Detecting a corner is the best way to detect a cross match
+var CORNER_0 = [Vector2(0, 0), Vector2(1, 0), Vector2(1, 1)]
+var CORNER_90 = [Vector2(0, 0), Vector2(1, 0), Vector2(0, 1)]
+var CORNER_180 = [Vector2(0, 0), Vector2(0, 1), Vector2(1, 1)]
+var CORNER_270 = [Vector2(0, 0), Vector2(0, 1), Vector2(-1, 1)]
+
+var corners = [CORNER_0, CORNER_90, CORNER_180, CORNER_270]
+
 # Indicates if we need to collapse columns after a match
 var collapse_needed: bool
 var new_target_needed = false
@@ -827,6 +835,8 @@ func count_matches():
 				round_matched += 1
 	count_vertical_matches()
 	count_horizontal_matches()
+	if (check_for_corners()):
+		print("Found a corner match wheeee!")
 
 func count_vertical_matches():
 	for i in width:
@@ -846,6 +856,33 @@ func count_horizontal_matches():
 		if (row_matches >= 3):
 			horizontal_matched += row_matches
 
+func check_for_corners():
+	for x in width:
+		for y in height:
+			if (check_for_corner_at(x, y)):
+				return true
+	return false
+
+func check_for_corner_at(x, y):
+	# For each shape, shift it to the x & y...
+	for shape in corners:
+		var shifted_shape = []
+		for square in shape:
+			shifted_shape.append(Vector2(square.x + x, square.y + y))
+		# If any square is outside the grid, this position is invalid so don't check it
+		if contains_invalid(shifted_shape):
+			continue
+		# Make sure all squares in the corner are matched
+		var matched = true
+		for square in shifted_shape:
+			if (!all_pieces[square.x][square.y].matched):
+				matched = false
+		if (matched == false):
+			# This shape has at least one non-match
+			continue
+		return true
+	return false
+
 func _on_collapse_timer_timeout():
 	collapse_columns()
 	collapse_needed = false
@@ -853,6 +890,8 @@ func _on_collapse_timer_timeout():
 func _on_clear_timer_timeout():
 	count_vertical_matches()
 	count_horizontal_matches()
+	if (check_for_corners()):
+		print("Found a corner match wheeee!")
 	clear_matches()
 	clear_broken()
 	var pitch_shift = 0.7 + (round_matched / 10.0)
