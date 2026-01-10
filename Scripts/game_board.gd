@@ -13,6 +13,7 @@ var goal_score = 10000000
 var puzzle_level = 1
 var vertical_multiplier = 1.0
 var horizontal_multiplier = 1.0
+var cross_multiplier = 1.5
 
 # All the cards/chips 
 var deck = []
