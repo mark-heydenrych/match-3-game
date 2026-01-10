@@ -19,6 +19,7 @@ var total_matched: int = 0
 var round_matched: int = 0
 var vertical_matched: int = 0
 var horizontal_matched: int = 0
+var cross_matched: int = 0
 var active: bool = true
 var challenge_level: bool = false
 var boss_level: bool = false
@@ -65,10 +66,10 @@ var tetris_pieces = [TETRIS_O, TETRIS_T_0, TETRIS_T_90, TETRIS_T_180, TETRIS_T_2
 					 TETRIS_L_0, TETRIS_L_90, TETRIS_L_180, TETRIS_L_270]
 
 # Detecting a corner is the best way to detect a cross match
-var CORNER_0 = [Vector2(0, 0), Vector2(1, 0), Vector2(1, 1)]
-var CORNER_90 = [Vector2(0, 0), Vector2(1, 0), Vector2(0, 1)]
-var CORNER_180 = [Vector2(0, 0), Vector2(0, 1), Vector2(1, 1)]
-var CORNER_270 = [Vector2(0, 0), Vector2(0, 1), Vector2(-1, 1)]
+var CORNER_0 = [Vector2(0, 0), Vector2(1, 0), Vector2(0, 1)]
+var CORNER_90 = [Vector2(0, 0), Vector2(-1, 0), Vector2(0, 1)]
+var CORNER_180 = [Vector2(0, 0), Vector2(-1, 0), Vector2(0, -1)]
+var CORNER_270 = [Vector2(0, 0), Vector2(0, -1), Vector2(1, 0)]
 
 var corners = [CORNER_0, CORNER_90, CORNER_180, CORNER_270]
 
@@ -833,35 +834,59 @@ func count_matches():
 		for j in height:
 			if (all_pieces[i][j].matched):
 				round_matched += 1
-	count_vertical_matches()
-	count_horizontal_matches()
-	if (check_for_corners()):
-		print("Found a corner match wheeee!")
+	cross_matched += count_corners()
+	vertical_matched += count_vertical_matches()
+	horizontal_matched += count_horizontal_matches()
 
 func count_vertical_matches():
+	var v = 0
 	for i in width:
 		var col_matches = 0
 		for j in height:
-			if (all_pieces[i][j].matched):
+			if (all_pieces[i][j].matched && all_pieces[i][j].colour != "BLANK"):
 				col_matches += 1
 		if (col_matches >= 3):
-			vertical_matched += col_matches
+			v += col_matches
+	return v
 
 func count_horizontal_matches():
+	var h = 0
 	for j in height:
 		var row_matches = 0
 		for i in width:
-			if (all_pieces[i][j].matched):
+			if (all_pieces[i][j].matched && all_pieces[i][j].colour != "BLANK"):
 				row_matches += 1
 		if (row_matches >= 3):
-			horizontal_matched += row_matches
+			h += row_matches
+	return h
 
-func check_for_corners():
-	for x in width:
-		for y in height:
-			if (check_for_corner_at(x, y)):
-				return true
-	return false
+func count_corners():
+	for i in width:
+		for j in height:
+			var corner = check_for_corner_at(i, j)
+			if (corner[0]):
+				var col_matches = 0
+				var row_matches = 0
+				var corner_matches = 0
+				var x = corner[1].x
+				var y = corner[1].y
+				var colour = corner[2]
+				# Count the vertical and horizontal components of this cross match
+				for h in height:
+					if (all_pieces[x][h].matched && all_pieces[x][h].matches(colour)):
+						col_matches += 1
+						all_pieces[x][h].colour = "BLANK"
+				for w in width:
+					if (all_pieces[w][y].matched && all_pieces[w][y].matches(colour)):
+						row_matches += 1
+						all_pieces[w][y].colour = "BLANK"
+				if (col_matches >= 3):
+					corner_matches += col_matches
+				# Only need 2 on the horizontal since the corner will have been recoloured
+				if (row_matches >= 2):
+					corner_matches += row_matches
+				return corner_matches
+	return 0
 
 func check_for_corner_at(x, y):
 	# For each shape, shift it to the x & y...
@@ -877,21 +902,28 @@ func check_for_corner_at(x, y):
 		for square in shifted_shape:
 			if (!all_pieces[square.x][square.y].matched):
 				matched = false
+		# Make sure all corner squares have the same colour
+		var colour = all_pieces[shifted_shape[0].x][shifted_shape[0].y].colour
+		for square in shifted_shape:
+			if (!all_pieces[square.x][square.y].matches(colour)):
+				matched = false
 		if (matched == false):
 			# This shape has at least one non-match
 			continue
-		return true
-	return false
+		return [true, shifted_shape[0], colour]
+	return [false, null, null]
 
 func _on_collapse_timer_timeout():
 	collapse_columns()
 	collapse_needed = false
 
 func _on_clear_timer_timeout():
-	count_vertical_matches()
-	count_horizontal_matches()
-	if (check_for_corners()):
-		print("Found a corner match wheeee!")
+	cross_matched = count_corners()
+	print("Cross matches: " + str(cross_matched))
+	vertical_matched += count_vertical_matches()
+	print("Vertical matches: " + str(vertical_matched))
+	horizontal_matched += count_horizontal_matches()
+	print("Horizontal matches: " + str(horizontal_matched))
 	clear_matches()
 	clear_broken()
 	var pitch_shift = 0.7 + (round_matched / 10.0)
@@ -913,6 +945,8 @@ func _on_refill_timer_timeout():
 		base_score *= get_parent().vertical_multiplier
 	for h in horizontal_matched:
 		base_score *= get_parent().horizontal_multiplier
+	for c in cross_matched:
+		base_score *= get_parent().cross_multiplier
 	print("Multiplied score = " + str(base_score))
 	get_parent().add_diamonds(round_matched - 3)
 	get_parent().add_score(base_score)
