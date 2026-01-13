@@ -22,6 +22,7 @@ var horizontal_matched: int = 0
 var cross_matched: int = 0
 var positive_diagonal_matched: int = 0
 var negative_diagonal_matched: int = 0
+var diag_cross_matched: int = 0
 var active: bool = true
 var challenge_level: bool = false
 var boss_level: bool = false
@@ -74,6 +75,13 @@ var CORNER_180 = [Vector2(0, 0), Vector2(-1, 0), Vector2(0, -1)]
 var CORNER_270 = [Vector2(0, 0), Vector2(0, -1), Vector2(1, 0)]
 
 var corners = [CORNER_0, CORNER_90, CORNER_180, CORNER_270]
+
+var DCORNER_0 = [Vector2(0, 0), Vector2(-1, -1), Vector2(1, -1)]
+var DCORNER_90 = [Vector2(0, 0), Vector2(1, -1), Vector2(1, 1)]
+var DCORNER_180 = [Vector2(0, 0), Vector2(1, 1), Vector2(-1, 1)]
+var DCORNER_270 = [Vector2(0, 0), Vector2(-1, -1), Vector2(-1, 1)]
+
+var diag_corners = [DCORNER_0, DCORNER_90, DCORNER_180, DCORNER_270]
 
 # Indicates if we need to collapse columns after a match
 var collapse_needed: bool
@@ -162,7 +170,7 @@ func _ready():
 		all_indexes.erase(l)
 	for r in right_edge:
 		all_indexes.erase(r)
-	match_type = MATCH_TYPE.DIAGONAL
+	match_type = MATCH_TYPE.STANDARD
 	all_pieces = setup_array()
 	setup_pieces()
 	challenge_level = false
@@ -945,6 +953,68 @@ func check_for_corner_at(x, y):
 		return [true, shifted_shape[0], colour]
 	return [false, null, null]
 
+func count_diag_corners():
+	for i in width:
+		for j in height:
+			var corner = check_for_diag_corner_at(i, j)
+			if (corner[0]):
+				print("Found corner match at " + str(corner[1]))
+				var pos_matches = 0
+				var neg_matches = 0
+				var corner_matches = 0
+				var x = corner[1].x
+				var y = corner[1].y
+				var colour = corner[2]
+				# Count the positive and negative components of this cross match
+				var positive_c = y - x
+				for w in width:
+					# Formula y = mx + c. The c is the offset from the centre diagonal. m is 1 for a perfect diagonal
+					var h = w + positive_c
+					if (h >= height || h < 0): continue
+					if (all_pieces[w][h].matched && all_pieces[w][h].colour != "BLANK"):
+						pos_matches += 1
+						all_pieces[w][h].colour = "BLANK"
+				var negative_c = y + x
+				for w in width:
+					# Formula y = mx + c. The c is the offset from the centre diagonal. m is -1 for a perfect diagonal
+					var h = -1 * w + negative_c
+					if (h >= height || h < 0): continue
+					if (all_pieces[w][h].matched && all_pieces[w][h].colour != "BLANK"):
+						neg_matches += 1
+						all_pieces[w][h].colour = "BLANK"
+				if (pos_matches >= 3):
+					corner_matches += pos_matches
+				# Only need 2 on the negative since the corner will have been recoloured
+				if (neg_matches >= 2):
+					corner_matches += neg_matches
+				return corner_matches
+	return 0
+
+func check_for_diag_corner_at(x, y):
+	# For each shape, shift it to the x & y...
+	for shape in diag_corners:
+		var shifted_shape = []
+		for square in shape:
+			shifted_shape.append(Vector2(square.x + x, square.y + y))
+		# If any square is outside the grid, this position is invalid so don't check it
+		if contains_invalid(shifted_shape):
+			continue
+		# Make sure all squares in the corner are matched
+		var matched = true
+		for square in shifted_shape:
+			if (!all_pieces[square.x][square.y].matched):
+				matched = false
+		# Make sure all corner squares have the same colour
+		var colour = all_pieces[shifted_shape[0].x][shifted_shape[0].y].colour
+		for square in shifted_shape:
+			if (!all_pieces[square.x][square.y].matches(colour)):
+				matched = false
+		if (matched == false):
+			# This shape has at least one non-match
+			continue
+		return [true, shifted_shape[0], colour]
+	return [false, null, null]
+
 func _on_collapse_timer_timeout():
 	collapse_columns()
 	collapse_needed = false
@@ -953,10 +1023,9 @@ func _on_clear_timer_timeout():
 	cross_matched = count_corners()
 	vertical_matched += count_vertical_matches()
 	horizontal_matched += count_horizontal_matches()
+	diag_cross_matched = count_diag_corners()
 	positive_diagonal_matched = count_positive_diagonal_matches()
-	print("Positive diagonals: " + str(positive_diagonal_matched))
 	negative_diagonal_matched = count_negative_diagonal_matches()
-	print("Negative diagonals: " + str(negative_diagonal_matched))
 	clear_matches()
 	clear_broken()
 	var pitch_shift = 0.7 + (round_matched / 10.0)
@@ -1004,6 +1073,7 @@ func _on_refill_timer_timeout():
 	horizontal_matched = 0
 	positive_diagonal_matched = 0
 	negative_diagonal_matched = 0
+	diag_cross_matched = 0
 	active = true
 
 func count_challenge_blocks():
