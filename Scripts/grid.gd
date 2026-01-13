@@ -20,6 +20,8 @@ var round_matched: int = 0
 var vertical_matched: int = 0
 var horizontal_matched: int = 0
 var cross_matched: int = 0
+var positive_diagonal_matched: int = 0
+var negative_diagonal_matched: int = 0
 var active: bool = true
 var challenge_level: bool = false
 var boss_level: bool = false
@@ -160,7 +162,7 @@ func _ready():
 		all_indexes.erase(l)
 	for r in right_edge:
 		all_indexes.erase(r)
-	match_type = MATCH_TYPE.STANDARD
+	match_type = MATCH_TYPE.DIAGONAL
 	all_pieces = setup_array()
 	setup_pieces()
 	challenge_level = false
@@ -860,6 +862,36 @@ func count_horizontal_matches():
 			h += row_matches
 	return h
 
+# The way the blocks count, positive diagonal is this way: \
+func count_positive_diagonal_matches():
+	var p = 0
+	for c in range(height * -1, width, 1):
+		var diag_matches = 0
+		for x in width:
+			# Formula y = mx + c. The c is the offset from the centre diagonal. m is 1 for a perfect diagonal
+			var y = x + c
+			if (y >= height || y < 0): continue
+			if (all_pieces[x][y].matched && all_pieces[x][y].colour != "BLANK"):
+				diag_matches += 1
+		if (diag_matches >= 3):
+			p += diag_matches
+	return p
+
+# The way the blocks count, negative diagonal is this way: /
+func count_negative_diagonal_matches():
+	var n = 0
+	for c in range(0, width + height, 1):
+		var diag_matches = 0
+		for x in width:
+			# Formula y = mx + c. The c is the offset from the centre diagonal. m is -1 for a perfect diagonal
+			var y = -1 * x + c
+			if (y >= height || y < 0): continue
+			if (all_pieces[x][y].matched && all_pieces[x][y].colour != "BLANK"):
+				diag_matches += 1
+		if (diag_matches >= 3):
+			n += diag_matches
+	return n
+
 func count_corners():
 	for i in width:
 		for j in height:
@@ -919,11 +951,12 @@ func _on_collapse_timer_timeout():
 
 func _on_clear_timer_timeout():
 	cross_matched = count_corners()
-	print("Cross matches: " + str(cross_matched))
 	vertical_matched += count_vertical_matches()
-	print("Vertical matches: " + str(vertical_matched))
 	horizontal_matched += count_horizontal_matches()
-	print("Horizontal matches: " + str(horizontal_matched))
+	positive_diagonal_matched = count_positive_diagonal_matches()
+	print("Positive diagonals: " + str(positive_diagonal_matched))
+	negative_diagonal_matched = count_negative_diagonal_matches()
+	print("Negative diagonals: " + str(negative_diagonal_matched))
 	clear_matches()
 	clear_broken()
 	var pitch_shift = 0.7 + (round_matched / 10.0)
@@ -969,6 +1002,8 @@ func _on_refill_timer_timeout():
 	round_matched = 0
 	vertical_matched = 0
 	horizontal_matched = 0
+	positive_diagonal_matched = 0
+	negative_diagonal_matched = 0
 	active = true
 
 func count_challenge_blocks():
