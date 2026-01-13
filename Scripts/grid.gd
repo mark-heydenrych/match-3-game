@@ -862,6 +862,7 @@ func count_horizontal_matches():
 			h += row_matches
 	return h
 
+# The way the blocks count, positive diagonal is this way: \
 func count_positive_diagonal_matches():
 	var p = 0
 	for c in range(height * -1, width, 1):
@@ -869,21 +870,22 @@ func count_positive_diagonal_matches():
 		for x in width:
 			# Formula y = mx + c. The c is the offset from the centre diagonal. m is 1 for a perfect diagonal
 			var y = x + c
-			if (y >= height): continue
+			if (y >= height || y < 0): continue
 			if (all_pieces[x][y].matched && all_pieces[x][y].colour != "BLANK"):
 				diag_matches += 1
 		if (diag_matches >= 3):
 			p += diag_matches
 	return p
 
+# The way the blocks count, negative diagonal is this way: /
 func count_negative_diagonal_matches():
 	var n = 0
-	for c in range(height * -1, width, 1):
+	for c in range(0, width + height, 1):
 		var diag_matches = 0
 		for x in width:
 			# Formula y = mx + c. The c is the offset from the centre diagonal. m is -1 for a perfect diagonal
 			var y = -1 * x + c
-			if (y < 0): continue
+			if (y >= height || y < 0): continue
 			if (all_pieces[x][y].matched && all_pieces[x][y].colour != "BLANK"):
 				diag_matches += 1
 		if (diag_matches >= 3):
