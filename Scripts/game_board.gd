@@ -14,6 +14,9 @@ var puzzle_level = 1
 var vertical_multiplier = 1.0
 var horizontal_multiplier = 1.0
 var cross_multiplier = 1.0
+var positive_diag_multiplier = 1.0
+var negative_diag_multiplier = 1.0
+var cross_diag_multiplier = 1.0
 
 # All the cards/chips 
 var deck = []
@@ -413,6 +416,12 @@ func shop(shop_item: ShopItem):
 		vertical_multiplier += 0.1
 	if (shop_item.item_name == "Improve Cross Efficiency"):
 		cross_multiplier += 0.5
+	if (shop_item.item_name == "Improve Diagonal Efficiency \\"):
+		positive_diag_multiplier += 0.1
+	if (shop_item.item_name == "Improve Diagonal Efficiency /"):
+		negative_diag_multiplier += 0.1
+	if (shop_item.item_name == "Improve X Efficiency"):
+		cross_diag_multiplier += 0.5
 	if (shop_item.card != null):
 		deck.append(shop_item.card)
 
