@@ -1049,6 +1049,12 @@ func _on_refill_timer_timeout():
 		base_score *= get_parent().horizontal_multiplier
 	for c in cross_matched:
 		base_score *= get_parent().cross_multiplier
+	for p in positive_diagonal_matched:
+		base_score *= get_parent().positive_diag_multiplier
+	for n in negative_diagonal_matched:
+		base_score *= get_parent().negative_diag_multiplier
+	for x in diag_cross_matched:
+		base_score *= get_parent().cross_diag_multiplier
 	print("Multiplied score = " + str(base_score))
 	get_parent().add_diamonds(round_matched - 3)
 	get_parent().add_score(base_score)
