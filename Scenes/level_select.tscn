@@ -6,9 +6,23 @@
 script = ExtResource("1_p0821")
 
 [node name="Left" type="Button" parent="."]
-offset_left = 100.0
-offset_top = 360.0
-offset_right = 138.0
-offset_bottom = 391.0
+offset_left = 140.0
+offset_top = 364.0
+offset_right = 178.0
+offset_bottom = 395.0
 text = "Left
 "
+
+[node name="Middle" type="Button" parent="."]
+offset_left = 241.0
+offset_top = 364.0
+offset_right = 302.0
+offset_bottom = 395.0
+text = "Middle"
+
+[node name="Right" type="Button" parent="."]
+offset_left = 356.0
+offset_top = 363.0
+offset_right = 405.0
+offset_bottom = 394.0
+text = "Right"

@@ -88,7 +88,6 @@ func get_shop_cards(num_cards: int):
 				in_deck = true
 		# If the card isn't in the existing deck, we can buy it in the shop
 		if (!in_deck):
-			print("Adding " + perk[0] + " to possible perks")
 			possible_perks.append(perk)
 	possible_perks.shuffle()
 	if (num_cards <= possible_perks.size()):
