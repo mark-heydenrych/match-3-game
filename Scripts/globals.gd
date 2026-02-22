@@ -50,7 +50,7 @@ var card_upgrades= [
 	["Starting Chip: Crack Blocks", 40, false, false],
 ]
 
-var sideboard_unlocked = true
+var sideboard_unlocked = false
 
 var starting_helper: String = "Chippy"
 var starting_shards = 0
