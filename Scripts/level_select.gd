@@ -4,7 +4,8 @@ extends Node2D
 @export var active = false
 
 # All possible rooms
-var extra_rooms = ["Boss", "Shop", "Rest Area", "Challenge"]
+var left_rooms = ["Shop", "Rest Area"]
+var right_rooms = ["Challenge"]
 # The rooms we can currently navigate to
 var rooms = ["Puzzle"]
 # The index of when we should get a special room
@@ -43,31 +44,43 @@ func setup_from_array(_rooms):
 			get_node("Right").queue_free()
 
 func setup():
-	print_tree_pretty()
-	if (get_node("Right") != null):
-		get_node("Right").queue_free()
+	#print_tree_pretty()
+	#if (get_node("Right") != null):
+	#	get_node("Right").queue_free()
 	# An ugly solution, but it works
-	if (get_node("Right2") != null):
-		get_node("Right2").queue_free()
+	#if (get_node("Right2") != null):
+	#	get_node("Right2").queue_free()
 	print("Current: " + str(current_index) + " Special: " + str(special_index))
-	rooms = ["Puzzle"]
-	rooms.append(extra_rooms.pick_random())
-	get_node("Left").text = rooms[0]
-	get_node("Left").pressed.connect(choose_level.bind(rooms[0]))
-	if (current_index == special_index && get_node("/root/BaseScene/Globals").sideboard_unlocked):
-		print("Adding special room button")
-		var right: Button = Button.new()
-		right.position = Vector2(300, 360)
-		add_child(right)
-		right.name = "Right"
-		move_child(right, -1)
-		right.text = rooms[1]
-		right.pressed.connect(choose_level.bind(rooms[1]))
-		right.disabled = false
-		right.visible = true
-	current_index = (current_index + 1) % 3
-	if (current_index == 0):
-		special_index = randi_range(0, 2)
+	get_node("Middle").text = "Puzzle"
+	get_node("Middle").pressed.connect(choose_level.bind("Puzzle"))
+	if (get_node("/root/BaseScene/Globals").sideboard_unlocked):
+		print("Adding special rooms")
+		var right = get_node("Right")
+		right.text = right_rooms.pick_random()
+		right.pressed.disconnect(choose_level)
+		right.pressed.connect(choose_level.bind(right.text))
+		if (current_index % 3 == 2):
+			right.disabled = false
+			right.visible = true
+		else:
+			right.disabled = true
+			right.visible = false
+		var left = get_node("Left")
+		left.text = left_rooms.pick_random()
+		left.pressed.disconnect(choose_level)
+		left.pressed.connect(choose_level.bind(left.text))
+		if (current_index % 3 > 0):
+			left.disabled = false
+			left.visible = true
+		else:
+			left.disabled = true
+			left.visible = false
+	else:
+		get_node("Left").disabled = true
+		get_node("Left").visible = false
+		get_node("Right").disabled = true
+		get_node("Right").visible = false
+	current_index = current_index + 1
 
 func choose_level(level):
 	if (active):
