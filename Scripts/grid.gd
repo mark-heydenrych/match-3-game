@@ -38,6 +38,8 @@ var active_effects = []
 
 var debuff_effects = []
 
+var debuff_colours = []
+
 var match_type
 
 enum MATCH_TYPE {STANDARD, DIAGONAL, QUEEN, TETRIS}
@@ -679,7 +681,9 @@ func check_for_matches():
 			if (all_pieces[i][j].colour != "null" && match_at(i, j, all_pieces[i][j].colour)):
 				all_pieces[i][j].matched = true
 				matches_found = true
-				round_matched += 1
+				# If this colour isn't debuffed, add to the match count
+				if (!debuff_colours.has(all_pieces[i][j].colour)):
+					round_matched += 1
 			# If we are working with max 3, then return immediately if we have 3 matches
 			if (debuff_effects.has("MATCH_TYPE_3") && round_matched >= 3):
 				return matches_found
