@@ -1236,7 +1236,7 @@ func countdown_viruses():
 	activate_debuffs()
 	num_debuffs = 0
 
-func set_level(level, challenge = false, boss = false):
+func set_level(level, challenge = false, challenge_debuffs = "", boss = false):
 	if (level >= 3):
 		num_specials = level / 2
 		range_specials = min((level - 1) / 2, special_pieces.size())
@@ -1301,16 +1301,61 @@ func set_level(level, challenge = false, boss = false):
 			piece.position = grid_to_pixel(x, y)
 		# Challenge levels >= 6 include certain rows or columns being excluded
 		# Maximum of 5 of these rows and columns, since too many would make it literally impossible
-		if (level >= 6):
-			var num_lines = min((level - 3) / 3, 5)
-			var all_lines = range(8)
-			all_lines.shuffle()
-			var lines = all_lines.slice(0, num_lines)
-			for i in range(lines.size()):
-				if i % 2 == 0:
-					exclude_row(lines[i])
-				else:
-					exclude_column(lines[i])
+		# THIS IS NO LONGER HOW CHALLENGE LEVELS ARE IMPLEMENTED. VARIOUS DEBUFFS CAN BE INCLUDED
+		#if (level >= 6):
+		#	var num_lines = min((level - 3) / 3, 5)
+		#	var all_lines = range(8)
+		#	all_lines.shuffle()
+		#	var lines = all_lines.slice(0, num_lines)
+		#	for i in range(lines.size()):
+		#		if i % 2 == 0:
+		#			exclude_row(lines[i])
+		#		else:
+		#			exclude_column(lines[i])
+		var debuff_indexes = all_indexes.duplicate()
+		debuff_indexes.shuffle()
+		var debuff_num = 0
+		var num_debuffs = len(challenge_debuffs) / 2
+		for i in num_debuffs:
+			var type = challenge_debuffs[i * 2]
+			var value = challenge_debuffs[i * 2 + 1]
+			if (type == "B"):
+				for v in int(value):
+					var debuff_position = debuff_indexes[debuff_num]
+					var x = debuff_position % width
+					var y = debuff_position / width
+					var exclusion_pos = grid_to_pixel(x, y)
+					var exclusion = preload("res://Scenes/exclusion_zone.tscn").instantiate()
+					exclusion.position = exclusion_pos
+					add_child(exclusion)
+					exclusions.append(exclusion)
+					debuff_num += 1
+			if (type == "H"):
+				for v in int(value):
+					var debuff_position = debuff_indexes[debuff_num]
+					var x = debuff_position % width
+					var y = debuff_position / width
+					var obscure_pos = grid_to_pixel(x, y)
+					var obscured = preload("res://Scenes/obscured_zone.tscn").instantiate()
+					obscured.position = obscure_pos
+					add_child(obscured)
+					move_child(obscured, -1)
+					obscured_blocks.append(obscured)
+					debuff_num += 1
+			if (type == "D"):
+				match value:
+					"R":
+						debuff_colours.append("red")
+					"O":
+						debuff_colours.append("orange")
+					"Y":
+						debuff_colours.append("yellow")
+					"G":
+						debuff_colours.append("green")
+					"B":
+						debuff_colours.append("blue")
+					"P":
+						debuff_colours.append("purple")
 		challenge_level = true
 	if (boss):
 		print("Boss level started")
