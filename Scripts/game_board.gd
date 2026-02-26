@@ -231,7 +231,7 @@ func transition_to(target_scene):
 	tween2.tween_property(get_node("ShutterSprite"),"position", Vector2(640, -640), 0.3).set_ease(Tween.EASE_OUT)
 	tween2.play()
 
-func navigate(level):
+func navigate(level, challenge_debuffs = ""):
 	match level:
 		"Shop":
 			var store: Shop = preload("res://Scenes/shop.tscn").instantiate()
@@ -256,6 +256,7 @@ func navigate(level):
 			grid.setup_pieces()
 			grid.set_level(puzzle_level)
 		"Challenge":
+			print("Debuffs: " + challenge_debuffs)
 			puzzle_level += 1
 			var grid: Grid = preload("res://Scenes/grid.tscn").instantiate()
 			add_child(grid)
@@ -270,7 +271,7 @@ func navigate(level):
 			set_grid_effects()
 			grid.clear_board()
 			grid.setup_pieces()
-			grid.set_level(puzzle_level, true)
+			grid.set_level(puzzle_level, true, challenge_debuffs)
 		"Boss":
 			puzzle_level += 1
 			var grid: Grid = preload("res://Scenes/grid.tscn").instantiate()
@@ -286,7 +287,7 @@ func navigate(level):
 			set_grid_effects()
 			grid.clear_board()
 			grid.setup_pieces()
-			grid.set_level(puzzle_level, false, true)
+			grid.set_level(puzzle_level, false, "", true)
 		"Rest Area":
 			var rest: RestArea = preload("res://Scenes/rest_area.tscn").instantiate()
 			add_child(rest)

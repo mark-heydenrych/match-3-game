@@ -12,6 +12,10 @@ var rooms = ["Puzzle"]
 var special_index: int
 # Which level we're on
 var current_index: int
+# The debuffs for the next challenge level
+var challenge_debuffs: String
+# The possible debuffs
+var possible_debuffs = ["DR", "DO", "DY", "DG", "DB", "DP", "H5", "B5"]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -55,6 +59,10 @@ func setup():
 	get_node("Middle").pressed.connect(choose_level.bind("Puzzle"))
 	if (get_node("/root/BaseScene/Globals").sideboard_unlocked):
 		print("Adding special rooms")
+		challenge_debuffs = ""
+		var num_debuffs = (current_index / 3) + 1
+		for i in num_debuffs:
+			challenge_debuffs += possible_debuffs.pick_random()
 		var right = get_node("Right")
 		right.text = right_rooms.pick_random()
 		right.pressed.disconnect(choose_level)
@@ -86,7 +94,7 @@ func choose_level(level):
 	if (active):
 		get_node("/root/BaseScene/AudioManager").play_click()
 		print(level)
-		get_parent().navigate(level)
+		get_parent().navigate(level, challenge_debuffs)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
