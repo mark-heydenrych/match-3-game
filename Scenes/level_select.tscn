@@ -26,3 +26,14 @@ offset_top = 363.0
 offset_right = 405.0
 offset_bottom = 394.0
 text = "Right"
+
+[node name="Radar" type="RichTextLabel" parent="."]
+visible = false
+offset_left = 263.0
+offset_top = 418.0
+offset_right = 502.0
+offset_bottom = 464.0
+bbcode_enabled = true
+text = "[center]Rare Mundanium Detected
+Adverse Conditions Unknown[/center]"
+fit_content = true

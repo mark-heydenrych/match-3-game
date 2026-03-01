@@ -52,6 +52,8 @@ var card_upgrades= [
 
 var sideboard_unlocked = false
 
+var radar_unlocked = false
+
 var starting_helper: String = "Chippy"
 var starting_shards = 0
 
