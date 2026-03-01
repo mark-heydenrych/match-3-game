@@ -70,9 +70,33 @@ func setup():
 		if (current_index % 3 == 2):
 			right.disabled = false
 			right.visible = true
+			get_node("Radar").visible = true
+			if (get_node("/root/BaseScene/Globals").radar_unlocked):
+				var adverse = ""
+				if (challenge_debuffs.contains("H")):
+					adverse += "\nVisual Interference Detected"
+				if (challenge_debuffs.contains("B")):
+					adverse += "\nUnmineable Areas Detected"
+				if (challenge_debuffs.contains("D")):
+					if (challenge_debuffs.contains("R")):
+						adverse += "\nFake Red Mundanium Detected"
+					if (challenge_debuffs.contains("O")):
+						adverse += "\nFake Orange Mundanium Detected"
+					if (challenge_debuffs.contains("Y")):
+						adverse += "\nFake Yellow Mundanium Detected"
+					if (challenge_debuffs.contains("G")):
+						adverse += "\nFake Green Mundanium Detected"
+					if (challenge_debuffs.contains("B")):
+						adverse += "\nFake Blue Mundanium Detected"
+					if (challenge_debuffs.contains("P")):
+						adverse += "\nFake Purple Mundanium Detected"
+				get_node("Radar").text = "[center]Rare Mundanium Detected" + adverse + "[/center]"
+			else:
+				get_node("Radar").text = "[center]Rare Mundanium Detected\nAdverse Conditions Unknown[/center]"
 		else:
 			right.disabled = true
 			right.visible = false
+			get_node("Radar").visible = false
 		var left = get_node("Left")
 		left.text = left_rooms.pick_random()
 		left.pressed.disconnect(choose_level)

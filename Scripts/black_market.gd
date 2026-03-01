@@ -97,6 +97,19 @@ func create_hacker_buttons():
 	add_child(helper_button)
 	helper_button.pressed.connect(buy_helper.bind(10))
 	upgrade_buttons.append(helper_button)
+	y_pos += 75
+	var radar_button = Button.new()
+	radar_button.text = "10: Unlock radar"
+	radar_button.name = "RadarButton"
+	radar_button.position = Vector2(1000, y_pos)
+	if (get_parent().get_node("Globals").radar_unlocked == true || get_parent().get_node("Globals").sideboard_unlocked == false):
+		print("Disabling radar button...")
+		radar_button.disabled = true
+	else:
+		radar_button.disabled = false
+	add_child(radar_button)
+	radar_button.pressed.connect(buy_radar.bind(10))
+	upgrade_buttons.append(radar_button)
 
 func clear_hacker_buttons():
 	for b in upgrade_buttons:
@@ -238,6 +251,15 @@ func buy_helper(cost):
 		set_num_diamonds(num_diamonds - cost)
 		get_parent().get_node("Globals").starting_helper = "Cleaner"
 		helper_bought = true
+		recreate_hacker_buttons()
+
+func buy_radar(cost):
+	if (!active):
+		return
+	get_node("/root/BaseScene/AudioManager").play_click()
+	if (num_diamonds >= cost):
+		set_num_diamonds(num_diamonds - cost)
+		get_parent().get_node("Globals").radar_unlocked = true
 		recreate_hacker_buttons()
 
 func smuggle_shards():
