@@ -115,7 +115,8 @@ func check_win_challenge(num_blocks):
 	elif score >= goal_score:
 		game_finished.emit("WIN")
 	elif turns_left >= 0 && num_blocks == 0:
-		level_select()
+		#level_select()
+		navigate("RewardScreen")
 
 func check_win_boss(bombs_matched, bonuses_matched):
 	print("Check win boss: " + str(bombs_matched) + ", " + str(bonuses_matched))
@@ -199,6 +200,8 @@ func remove_combo_sprite():
 
 # Draw a random card from the deck
 func random_card():
+	print("Deck: ")
+	print(deck)
 	if (deck.size() <= 0):
 		return null
 	if (diamonds <= 0):
@@ -272,6 +275,13 @@ func navigate(level, challenge_debuffs = ""):
 			grid.clear_board()
 			grid.setup_pieces()
 			grid.set_level(puzzle_level, true, challenge_debuffs)
+		"RewardScreen":
+			var reward: RewardScreen = preload("res://Scenes/reward_screen.tscn").instantiate()
+			add_child(reward)
+			reward.position = Vector2(100, 200)
+			reward.name = "RewardScreen"
+			reward.visible = true
+			transition_to(reward)
 		"Boss":
 			puzzle_level += 1
 			var grid: Grid = preload("res://Scenes/grid.tscn").instantiate()
@@ -424,8 +434,10 @@ func shop(shop_item: ShopItem):
 	if (shop_item.item_name == "Improve X Efficiency"):
 		cross_diag_multiplier += 0.5
 	if (shop_item.card != null):
-		deck.append(shop_item.card)
+		deck.append(Card.card_from_string(shop_item.card._to_string()))
 
+func add_reward(card: Card):
+	deck.append(Card.card_from_string(card._to_string()))
 
 func _on_instant_expiry_timer_timeout():
 	get_node("SideBoard").deactivate_cards()
