@@ -66,6 +66,12 @@ func setup_from_file(save_lines):
 	goal = int(stats[4])
 	goal_score = int(stats[5])
 	puzzle_level = int(stats[6])
+	horizontal_multiplier = float(stats[7])
+	vertical_multiplier = float(stats[8])
+	cross_multiplier = float(stats[9])
+	positive_diag_multiplier = float(stats[10])
+	negative_diag_multiplier = float(stats[11])
+	cross_diag_multiplier = float(stats[12])
 	# Setup the level select
 	json = JSON.new()
 	json.parse(save_lines[4])
@@ -448,7 +454,8 @@ func activate_debuff():
 
 func gameboard_to_json():
 	var json_string = JSON.stringify(deck) + "\n"
-	json_string += str(turns_left) + "," + str(max_turns) + "," + str(diamonds) + "," + str(score) + "," + str(goal) + "," + str(goal_score) + "," + str(puzzle_level) + "\n"
+	json_string += str(turns_left) + "," + str(max_turns) + "," + str(diamonds) + "," + str(score) + "," + str(goal) + "," + str(goal_score) + "," + str(puzzle_level) + ","
+	json_string += str(horizontal_multiplier) + "," + str(vertical_multiplier) + "," + str(cross_multiplier) + "," + str(positive_diag_multiplier) + "," + str(negative_diag_multiplier) + "," + str(cross_diag_multiplier) + "\n"
 	json_string += str(get_node("LevelSelect"))
 	return json_string
 
