@@ -110,7 +110,8 @@ func globals_to_json():
 	json_string += JSON.stringify(slot_upgrades) + "\n"
 	json_string += JSON.stringify(battery_upgrades) + "\n"
 	json_string += JSON.stringify(card_upgrades) + "\n"
-	json_string += str(sideboard_unlocked)
+	json_string += str(sideboard_unlocked) + "\n"
+	json_string += str(radar_unlocked)
 	return json_string
 
 func json_to_globals(save_lines):
@@ -149,3 +150,7 @@ func json_to_globals(save_lines):
 		sideboard_unlocked = true
 	else:
 		sideboard_unlocked = false
+	if (save_lines[6] == "true"):
+		radar_unlocked = true
+	else:
+		radar_unlocked = false

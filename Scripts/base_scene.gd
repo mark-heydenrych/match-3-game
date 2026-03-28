@@ -34,7 +34,7 @@ func load_game():
 	print(content)
 	var save_lines = content.split("\n")
 	if save_lines[0] == "IN_RUN":
-		load_gameboard(save_lines.slice(1, 12))
+		load_gameboard(save_lines.slice(1, 13))
 	if save_lines[0] == "BLACK_MARKET":
 		load_blackmarket(save_lines.slice(1,8))
 	# Load the achievements
@@ -51,7 +51,7 @@ func load_gameboard(save_lines):
 	
 	get_node("Menu").queue_free()
 	var game_board: GameBoard = preload("res://Scenes/game_board.tscn").instantiate()
-	get_node("Globals").json_to_globals(save_lines.slice(5, 11))
+	get_node("Globals").json_to_globals(save_lines.slice(5, 12))
 	game_board.name = "gameboard"
 	add_child(game_board)
 	game_board.setup_from_file(save_lines)
@@ -72,7 +72,7 @@ func load_blackmarket(save_lines):
 	await get_tree().create_timer(1.5).timeout
 	
 	get_node("Menu").queue_free()
-	get_node("Globals").json_to_globals(save_lines.slice(1, 7))
+	get_node("Globals").json_to_globals(save_lines.slice(1, 8))
 	var market: BlackMarket = preload("res://Scenes/black_market.tscn").instantiate()
 	market.set_num_diamonds(int(save_lines[0]))
 	add_child(market)
