@@ -196,6 +196,8 @@ func recreate_smuggler_buttons():
 	get_parent().save_state = "BLACK_MARKET\n" + black_market_to_json()
 
 func buy_card(upgrade_name, upgrade_cost, upgrade_index):
+	if (!active):
+		return
 	if (num_diamonds >= upgrade_cost):
 		set_num_diamonds(num_diamonds - upgrade_cost)
 		get_parent().get_node("Globals").card_upgrades[upgrade_index][3] = true
@@ -214,6 +216,8 @@ func buy_card(upgrade_name, upgrade_cost, upgrade_index):
 		recreate_chip_buttons()
 
 func buy_slot(upgrade_name, upgrade_cost, upgrade_index):
+	if (!active):
+		return
 	if (num_diamonds >= upgrade_cost):
 		set_num_diamonds(num_diamonds - upgrade_cost)
 		get_parent().get_node("Globals").slot_upgrades[upgrade_index][3] = true
@@ -223,6 +227,8 @@ func buy_slot(upgrade_name, upgrade_cost, upgrade_index):
 		recreate_hacker_buttons()
 
 func buy_battery(upgrade_name, upgrade_cost, upgrade_index):
+	if (!active):
+		return
 	if (num_diamonds >= upgrade_cost):
 		set_num_diamonds(num_diamonds - upgrade_cost)
 		get_parent().get_node("Globals").battery_upgrades[upgrade_index][3] = true
@@ -272,6 +278,8 @@ func smuggle_shards():
 	recreate_smuggler_buttons()
 
 func _on_hacker_button_pressed():
+	if (!active):
+		return
 	get_node("HackerSprite").visible = true
 	get_node("HackerButton").visible = false
 	get_node("HackerButton").disabled = true
@@ -289,6 +297,8 @@ func _on_hacker_button_pressed():
 
 
 func _on_battery_button_pressed():
+	if (!active):
+		return
 	get_node("BatterySprite").visible = true
 	get_node("HackerButton").visible = false
 	get_node("HackerButton").disabled = true
@@ -306,6 +316,8 @@ func _on_battery_button_pressed():
 
 
 func _on_chip_trader_button_pressed():
+	if (!active):
+		return
 	get_node("ChipTraderSprite").visible = true
 	get_node("HackerButton").visible = false
 	get_node("HackerButton").disabled = true
@@ -323,6 +335,8 @@ func _on_chip_trader_button_pressed():
 
 
 func _on_back_button_pressed():
+	if (!active):
+		return
 	get_node("MarketBackground").visible = true
 	get_node("HackerButton").visible = true
 	get_node("HackerButton").disabled = false
@@ -346,6 +360,8 @@ func _on_back_button_pressed():
 
 
 func _on_smuggler_button_pressed():
+	if (!active):
+		return
 	get_node("SmugglerSprite").visible = true
 	get_node("HackerButton").visible = false
 	get_node("HackerButton").disabled = true
@@ -360,3 +376,20 @@ func _on_smuggler_button_pressed():
 	create_smuggler_buttons()
 	get_node("MarketBackground").visible = false
 	pass # Replace with function body.
+
+
+func _on_guidebook_button_pressed():
+	if (!active):
+		return
+	get_node("/root/BaseScene/AudioManager").play_click()
+	active = false
+	var guidebook = preload("res://Scenes/guidebook.tscn").instantiate()
+	guidebook.name = "Guidebook"
+	add_child(guidebook)
+	guidebook.z_index = 10
+	guidebook.position = Vector2(640, 360)
+	guidebook.get_node("CloseButton").pressed.connect(close_guidebook)
+
+func close_guidebook():
+	active = true
+	get_node("Guidebook").queue_free()

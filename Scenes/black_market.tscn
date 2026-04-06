@@ -84,8 +84,16 @@ offset_right = 168.0
 offset_bottom = 235.0
 text = "Smuggler"
 
+[node name="GuidebookButton" type="Button" parent="."]
+offset_left = 1148.0
+offset_top = 662.0
+offset_right = 1241.0
+offset_bottom = 693.0
+text = "Guidebook"
+
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="BatteryButton" to="." method="_on_battery_button_pressed"]
 [connection signal="pressed" from="HackerButton" to="." method="_on_hacker_button_pressed"]
 [connection signal="pressed" from="ChipTraderButton" to="." method="_on_chip_trader_button_pressed"]
 [connection signal="pressed" from="SmugglerButton" to="." method="_on_smuggler_button_pressed"]
+[connection signal="pressed" from="GuidebookButton" to="." method="_on_guidebook_button_pressed"]
