@@ -161,6 +161,8 @@ func start_black_market():
 	tween2.play()
 
 func new_run():
+	if (!get_node("BlackMarket").active):
+		return
 	get_node("AudioManager").play_click()
 	print("New Run")
 	var tween: Tween = create_tween()
