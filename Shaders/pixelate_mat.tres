@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bawdt5u4h6fv4"]
+
+[ext_resource type="Shader" path="res://Shaders/pixelate.gdshader" id="1_1l8m8"]
+
+[resource]
+shader = ExtResource("1_1l8m8")
+shader_parameter/pixel_size = 4.0
+shader_parameter/handle_edges = true

@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bh1prigd3w04f"]
+
+[ext_resource type="FontFile" uid="uid://b2abn5cqd2yia" path="res://Fonts/Astrolab.ttf" id="1_47udb"]
+
+[resource]
+default_font = ExtResource("1_47udb")
+default_font_size = 14

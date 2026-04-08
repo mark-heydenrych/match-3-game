@@ -1,39 +1,94 @@
-[gd_scene load_steps=2 format=3 uid="uid://dolkw7qgu36ri"]
+[gd_scene load_steps=6 format=3 uid="uid://dolkw7qgu36ri"]
 
 [ext_resource type="Script" path="res://Scripts/level_select.gd" id="1_p0821"]
+[ext_resource type="Material" uid="uid://22mme7s2k48" path="res://Shaders/crt_mat.tres" id="2_byhsc"]
+[ext_resource type="Theme" uid="uid://bh1prigd3w04f" path="res://Shaders/astrolab_font.tres" id="3_m5138"]
+[ext_resource type="Texture2D" uid="uid://beb5hjr7wxg4c" path="res://Art/meteor01.png" id="4_rbv35"]
+[ext_resource type="Material" uid="uid://bawdt5u4h6fv4" path="res://Shaders/pixelate_mat.tres" id="5_j4mgv"]
 
 [node name="LevelSelect" type="Node2D"]
 script = ExtResource("1_p0821")
 
-[node name="Left" type="Button" parent="."]
-offset_left = 140.0
-offset_top = 364.0
-offset_right = 178.0
-offset_bottom = 395.0
-text = "Left
-"
+[node name="Overlay" type="ColorRect" parent="."]
+material = ExtResource("2_byhsc")
+offset_right = 518.0
+offset_bottom = 614.0
 
-[node name="Middle" type="Button" parent="."]
-offset_left = 241.0
-offset_top = 364.0
-offset_right = 302.0
-offset_bottom = 395.0
-text = "Middle"
+[node name="Grid" type="GridContainer" parent="Overlay"]
+layout_mode = 0
+offset_top = 64.0
+offset_right = 518.0
+offset_bottom = 678.0
+columns = 3
 
-[node name="Right" type="Button" parent="."]
-offset_left = 356.0
-offset_top = 363.0
-offset_right = 405.0
-offset_bottom = 394.0
-text = "Right"
-
-[node name="Radar" type="RichTextLabel" parent="."]
+[node name="LeftSub" type="Control" parent="Overlay/Grid"]
 visible = false
-offset_left = 263.0
-offset_top = 418.0
-offset_right = 502.0
-offset_bottom = 464.0
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Left" type="TextureButton" parent="Overlay/Grid"]
+material = ExtResource("5_j4mgv")
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("4_rbv35")
+stretch_mode = 3
+flip_h = true
+
+[node name="Middle" type="TextureButton" parent="Overlay/Grid"]
+material = ExtResource("5_j4mgv")
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("4_rbv35")
+stretch_mode = 3
+
+[node name="RightSub" type="Control" parent="Overlay/Grid"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Right" type="TextureButton" parent="Overlay/Grid"]
+material = ExtResource("5_j4mgv")
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("4_rbv35")
+stretch_mode = 3
+flip_v = true
+
+[node name="LeftLabelSub" type="Control" parent="Overlay/Grid"]
+visible = false
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="LeftLabel" type="RichTextLabel" parent="Overlay/Grid"]
+custom_minimum_size = Vector2(170, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("3_m5138")
 bbcode_enabled = true
-text = "[center]Rare Mundanium Detected
-Adverse Conditions Unknown[/center]"
+
+[node name="MiddleLabel" type="RichTextLabel" parent="Overlay/Grid"]
+custom_minimum_size = Vector2(170, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("3_m5138")
+bbcode_enabled = true
+text = "[center][color=3DDA6B]PUZZLE[/color][/center]"
+
+[node name="Radar" type="RichTextLabel" parent="Overlay/Grid"]
+custom_minimum_size = Vector2(170, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("3_m5138")
+bbcode_enabled = true
+text = "[center][color=3DDA6B]Rare Mundanium Detected Adverse Conditions Unknown[/color][/center]"
 fit_content = true

@@ -81,6 +81,7 @@ func setup_from_file(save_lines):
 	levelSelect.active = true
 	levelSelect.visible = true
 	levelSelect.setup_from_array(json.data)
+	levelSelect.position = Vector2(64, 80)
 	active_scene = levelSelect
 	get_node("Score_Label").text = "Score: " + str(score)
 	get_node("Turns_Label").text = "Turns Left: " + str(turns_left)  + "/" + str(max_turns)
@@ -140,6 +141,7 @@ func level_select():
 		levelSelect.name = "LevelSelect"
 		levelSelect.active = true
 		levelSelect.visible = true
+		levelSelect.position = Vector2(64, 80)
 	levelSelect.setup()
 	saved_state = "IN_RUN" + "\n" + get_node("SideBoard").sideboard_to_json() + gameboard_to_json()
 	get_parent().save_state = saved_state
