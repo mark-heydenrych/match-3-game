@@ -34,14 +34,15 @@ func setup_from_array(_rooms):
 	print("Level select with index " + str(current_index))
 	challenge_debuffs = _rooms[2]
 	left_room = _rooms[3]
-	get_node("Middle").text = "Puzzle"
-	get_node("Middle").pressed.connect(choose_level.bind("Puzzle"))
+	# get_node("Overlay/Grid/Middle").text = "Puzzle"
+	get_node("Overlay/Grid/Middle").pressed.connect(choose_level.bind("Puzzle"))
 	if (get_node("/root/BaseScene/Globals").sideboard_unlocked):
 		print("Adding special rooms")
-		var right = get_node("Right")
-		right.text = right_rooms.pick_random()
+		var right = get_node("Overlay/Grid/Right")
+		var right_room = right_rooms.pick_random()
+		# right.text = right_rooms.pick_random()
 		right.pressed.disconnect(choose_level)
-		right.pressed.connect(choose_level.bind(right.text))
+		right.pressed.connect(choose_level.bind(right_room))
 		if (current_index % 3 == 2):
 			right.disabled = false
 			right.visible = true
@@ -49,24 +50,35 @@ func setup_from_array(_rooms):
 		else:
 			right.disabled = true
 			right.visible = false
-			get_node("Radar").visible = false
-		var left = get_node("Left")
-		left.text = left_room
+			get_node("Overlay/Grid/Radar").visible = false
+		var left = get_node("Overlay/Grid/Left")
+		# left.text = left_room
+		get_node("Overlay/Grid/LeftLabel").text = "[center][color=3DDA6B]" + left_room + "[/color][center]"
 		left.pressed.disconnect(choose_level)
-		left.pressed.connect(choose_level.bind(left.text))
+		left.pressed.connect(choose_level.bind(right_room))
 		if (current_index % 3 > 0):
 			left.disabled = false
 			left.visible = true
+			get_node("Overlay/Grid/LeftLabel").visible = true
 		else:
 			left.disabled = true
 			left.visible = false
+			get_node("Overlay/Grid/LeftLabel").visible = false
 	else:
-		get_node("Left").disabled = true
-		get_node("Left").visible = false
-		get_node("Right").disabled = true
-		get_node("Right").visible = false
+		get_node("Overlay/Grid/Left").disabled = true
+		get_node("Overlay/Grid/Left").visible = false
+		get_node("Overlay/Grid/LeftLabel").visible = false
+		get_node("Overlay/Grid/Right").disabled = true
+		get_node("Overlay/Grid/Right").visible = false
+	# Set up the sub controls which keep grid spacing correct
+	get_node("Overlay/Grid/LeftSub").visible = !get_node("Overlay/Grid/Left").visible
+	get_node("Overlay/Grid/RightSub").visible = !get_node("Overlay/Grid/Right").visible
+	get_node("Overlay/Grid/LeftLabelSub").visible = !get_node("Overlay/Grid/LeftLabel").visible
 
 func setup():
+	get_node("Overlay/Grid/Left").pivot_offset = Vector2(64, 64)
+	get_node("Overlay/Grid/Middle").pivot_offset = Vector2(64, 64)
+	get_node("Overlay/Grid/Right").pivot_offset = Vector2(64, 64)
 	#print_tree_pretty()
 	#if (get_node("Right") != null):
 	#	get_node("Right").queue_free()
@@ -74,18 +86,19 @@ func setup():
 	#if (get_node("Right2") != null):
 	#	get_node("Right2").queue_free()
 	print("Current: " + str(current_index) + " Special: " + str(special_index))
-	get_node("Middle").text = "Puzzle"
-	get_node("Middle").pressed.connect(choose_level.bind("Puzzle"))
+	# get_node("Overlay/Grid/Middle").text = "Puzzle"
+	get_node("Overlay/Grid/Middle").pressed.connect(choose_level.bind("Puzzle"))
 	if (get_node("/root/BaseScene/Globals").sideboard_unlocked):
 		print("Adding special rooms")
 		challenge_debuffs = ""
 		var num_debuffs = (current_index / 3) + 1
 		for i in num_debuffs:
 			challenge_debuffs += possible_debuffs.pick_random()
-		var right = get_node("Right")
-		right.text = right_rooms.pick_random()
+		var right = get_node("Overlay/Grid/Right")
+		var right_room = right_rooms.pick_random()
+		# right.text = right_rooms.pick_random()
 		right.pressed.disconnect(choose_level)
-		right.pressed.connect(choose_level.bind(right.text))
+		right.pressed.connect(choose_level.bind(right_room))
 		if (current_index % 3 == 2):
 			right.disabled = false
 			right.visible = true
@@ -93,26 +106,34 @@ func setup():
 		else:
 			right.disabled = true
 			right.visible = false
-			get_node("Radar").visible = false
-		var left = get_node("Left")
+			get_node("Overlay/Grid/Radar").visible = false
+		var left = get_node("Overlay/Grid/Left")
 		left_room = left_rooms.pick_random()
-		left.text = left_room
+		# left.text = left_room
+		get_node("Overlay/Grid/LeftLabel").text = "[center][color=3DDA6B]" + left_room + "[/color][center]"
 		left.pressed.disconnect(choose_level)
-		left.pressed.connect(choose_level.bind(left.text))
+		left.pressed.connect(choose_level.bind(left_room))
 		if (current_index % 3 > 0):
 			left.disabled = false
 			left.visible = true
+			get_node("Overlay/Grid/LeftLabel").visible = true
 		else:
 			left.disabled = true
 			left.visible = false
+			get_node("Overlay/Grid/LeftLabel").visible = false
 	else:
-		get_node("Left").disabled = true
-		get_node("Left").visible = false
-		get_node("Right").disabled = true
-		get_node("Right").visible = false
+		get_node("Overlay/Grid/Left").disabled = true
+		get_node("Overlay/Grid/Left").visible = false
+		get_node("Overlay/Grid/LeftLabel").visible = false
+		get_node("Overlay/Grid/Right").disabled = true
+		get_node("Overlay/Grid/Right").visible = false
+	# Set up the sub controls which keep grid spacing correct
+	get_node("Overlay/Grid/LeftSub").visible = !get_node("Overlay/Grid/Left").visible
+	get_node("Overlay/Grid/RightSub").visible = !get_node("Overlay/Grid/Right").visible
+	get_node("Overlay/Grid/LeftLabelSub").visible = !get_node("Overlay/Grid/LeftLabel").visible
 
 func set_radar():
-	get_node("Radar").visible = true
+	get_node("Overlay/Grid/Radar").visible = true
 	if (get_node("/root/BaseScene/Globals").radar_unlocked):
 		var adverse = ""
 		if (challenge_debuffs.contains("H")):
@@ -132,9 +153,9 @@ func set_radar():
 				adverse += "\nFake Blue Mundanium Detected"
 			if (challenge_debuffs.contains("P")):
 				adverse += "\nFake Purple Mundanium Detected"
-		get_node("Radar").text = "[center]Rare Mundanium Detected" + adverse + "[/center]"
+		get_node("Overlay/Grid/Radar").text = "[center][color=3DDA6B]Rare Mundanium Detected" + adverse + "[/color][/center]"
 	else:
-		get_node("Radar").text = "[center]Rare Mundanium Detected\nAdverse Conditions Unknown[/center]"
+		get_node("Overlay/Grid/Radar").text = "[center][color=3DDA6B]Rare Mundanium Detected\nAdverse Conditions Unknown[/color][/center]"
 
 func choose_level(level):
 	if (active):
@@ -145,4 +166,7 @@ func choose_level(level):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	get_node("Overlay/Grid/Middle").rotation += 1 * delta
+	get_node("Overlay/Grid/Left").rotation += -0.75 * delta
+	get_node("Overlay/Grid/Right").rotation += -0.5 * delta
 	pass
