@@ -1319,7 +1319,7 @@ func set_level(level, challenge = false, challenge_debuffs = "", boss = false):
 		for i in num_debuffs:
 			var type = challenge_debuffs[i * 2]
 			var value = challenge_debuffs[i * 2 + 1]
-			if (type == "B"):
+			if (type == "I"):
 				for v in int(value):
 					var debuff_position = debuff_indexes[debuff_num]
 					var x = debuff_position % width
