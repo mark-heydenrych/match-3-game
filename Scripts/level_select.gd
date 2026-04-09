@@ -16,7 +16,7 @@ var current_index: int
 # The debuffs for the next challenge level
 var challenge_debuffs: String
 # The possible debuffs
-var possible_debuffs = ["DR", "DO", "DY", "DG", "DB", "DP", "H5", "B5"]
+var possible_debuffs = ["DR", "DO", "DY", "DG", "DB", "DP", "H5", "I5"]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -70,6 +70,7 @@ func setup_from_array(_rooms):
 		get_node("Overlay/Grid/LeftLabel").visible = false
 		get_node("Overlay/Grid/Right").disabled = true
 		get_node("Overlay/Grid/Right").visible = false
+		get_node("Overlay/Grid/Radar").visible = false
 	# Set up the sub controls which keep grid spacing correct
 	get_node("Overlay/Grid/LeftSub").visible = !get_node("Overlay/Grid/Left").visible
 	get_node("Overlay/Grid/RightSub").visible = !get_node("Overlay/Grid/Right").visible
@@ -79,14 +80,7 @@ func setup():
 	get_node("Overlay/Grid/Left").pivot_offset = Vector2(64, 64)
 	get_node("Overlay/Grid/Middle").pivot_offset = Vector2(64, 64)
 	get_node("Overlay/Grid/Right").pivot_offset = Vector2(64, 64)
-	#print_tree_pretty()
-	#if (get_node("Right") != null):
-	#	get_node("Right").queue_free()
-	# An ugly solution, but it works
-	#if (get_node("Right2") != null):
-	#	get_node("Right2").queue_free()
 	print("Current: " + str(current_index) + " Special: " + str(special_index))
-	# get_node("Overlay/Grid/Middle").text = "Puzzle"
 	get_node("Overlay/Grid/Middle").pressed.connect(choose_level.bind("Puzzle"))
 	if (get_node("/root/BaseScene/Globals").sideboard_unlocked):
 		print("Adding special rooms")
@@ -127,6 +121,7 @@ func setup():
 		get_node("Overlay/Grid/LeftLabel").visible = false
 		get_node("Overlay/Grid/Right").disabled = true
 		get_node("Overlay/Grid/Right").visible = false
+		get_node("Overlay/Grid/Radar").visible = false
 	# Set up the sub controls which keep grid spacing correct
 	get_node("Overlay/Grid/LeftSub").visible = !get_node("Overlay/Grid/Left").visible
 	get_node("Overlay/Grid/RightSub").visible = !get_node("Overlay/Grid/Right").visible
@@ -138,7 +133,7 @@ func set_radar():
 		var adverse = ""
 		if (challenge_debuffs.contains("H")):
 			adverse += "\nVisual Interference Detected"
-		if (challenge_debuffs.contains("B")):
+		if (challenge_debuffs.contains("I")):
 			adverse += "\nUnmineable Areas Detected"
 		if (challenge_debuffs.contains("D")):
 			if (challenge_debuffs.contains("R")):
