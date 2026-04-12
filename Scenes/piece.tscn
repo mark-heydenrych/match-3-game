@@ -1,8 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://bepdx77askp6h"]
+[gd_scene load_steps=4 format=3 uid="uid://bepdx77askp6h"]
 
 [ext_resource type="Script" path="res://Scripts/piece.gd" id="1_qjnky"]
+[ext_resource type="Shader" path="res://Shaders/sparkle.gdshader" id="2_ausce"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qhr4m"]
+shader = ExtResource("2_ausce")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/alpha = -0.5
+shader_parameter/shney_disperse = 0.5
+shader_parameter/shney_speed = 0.5
+shader_parameter/twist_speed = 1.0
+shader_parameter/rota_speed = 1.0
+shader_parameter/curve_ci = 0.3
 
 [node name="Piece" type="Node2D"]
 script = ExtResource("1_qjnky")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="Sparkle" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_qhr4m")
+offset_right = 64.0
+offset_bottom = 64.0
+color = Color(1, 1, 1, 0)
