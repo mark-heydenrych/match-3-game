@@ -2,9 +2,11 @@ class_name Piece
 extends Node2D
 
 @export var colour: String
+var old_colour: String
 @export var matched: bool
 @export var durability: int
 @export var fixed: bool = false
+@export var special: bool = false
 var grid_x: int
 var grid_y: int
 

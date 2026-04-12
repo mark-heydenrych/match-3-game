@@ -544,9 +544,9 @@ func contains_invalid(positions):
 			return true
 	return false
 
-func get_neighbours(x, y):
+func get_neighbours(x, y, all_eight = false):
 	var neighbours = []
-	if (match_type == MATCH_TYPE.STANDARD || match_type == MATCH_TYPE.TETRIS || match_type == MATCH_TYPE.QUEEN):
+	if (match_type == MATCH_TYPE.STANDARD || match_type == MATCH_TYPE.TETRIS || match_type == MATCH_TYPE.QUEEN || all_eight):
 		if (x > 0):
 			neighbours.append(Vector2(x - 1, y))
 		if (x < width - 1):
@@ -555,7 +555,7 @@ func get_neighbours(x, y):
 			neighbours.append(Vector2(x, y - 1))
 		if (y < height - 1):
 			neighbours.append(Vector2(x, y + 1))
-	if (match_type == MATCH_TYPE.DIAGONAL  || match_type == MATCH_TYPE.QUEEN):
+	if (match_type == MATCH_TYPE.DIAGONAL  || match_type == MATCH_TYPE.QUEEN || all_eight):
 		if (x > 0 && y > 0):
 			neighbours.append(Vector2(x - 1, y - 1))
 		if (x > 0 && y < height - 1):
@@ -709,6 +709,8 @@ func _input(event):
 			rotate_blocks()
 		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_C:
 			run_conveyers()
+		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_Q:
+			active_effects.append("TRANSLOCATOR")
 		if event is InputEventMouseButton and event.is_pressed():
 			var pos = get_global_mouse_position()
 			first_touch = pixel_to_grid(pos.x, pos.y)
@@ -919,10 +921,12 @@ func count_corners():
 				for h in height:
 					if (all_pieces[x][h].matched && all_pieces[x][h].matches(colour)):
 						col_matches += 1
+						all_pieces[x][h].old_colour = all_pieces[x][h].colour
 						all_pieces[x][h].colour = "BLANK"
 				for w in width:
 					if (all_pieces[w][y].matched && all_pieces[w][y].matches(colour)):
 						row_matches += 1
+						all_pieces[w][y].old_colour = all_pieces[w][y].colour
 						all_pieces[w][y].colour = "BLANK"
 				if (col_matches >= 3):
 					corner_matches += col_matches
@@ -977,6 +981,7 @@ func count_diag_corners():
 					if (h >= height || h < 0): continue
 					if (all_pieces[w][h].matched && all_pieces[w][h].colour != "BLANK"):
 						pos_matches += 1
+						all_pieces[w][h].old_colour = all_pieces[w][h].colour
 						all_pieces[w][h].colour = "BLANK"
 				var negative_c = y + x
 				for w in width:
@@ -985,6 +990,7 @@ func count_diag_corners():
 					if (h >= height || h < 0): continue
 					if (all_pieces[w][h].matched && all_pieces[w][h].colour != "BLANK"):
 						neg_matches += 1
+						all_pieces[w][h].old_colour = all_pieces[w][h].colour
 						all_pieces[w][h].colour = "BLANK"
 				if (pos_matches >= 3):
 					corner_matches += pos_matches
@@ -1019,6 +1025,37 @@ func check_for_diag_corner_at(x, y):
 		return [true, shifted_shape[0], colour]
 	return [false, null, null]
 
+func spawn_special_blocks():
+	print("Spawning specials")
+	for x in width:
+		for y in height:
+			# If this piece is matched...
+			if (all_pieces[x][y].matched):
+				# Count how many neighbours are matched
+				var neighbours = get_neighbours(x, y)
+				var matched_neighbours = 0
+				for n in neighbours:
+					if all_pieces[n.x][n.y].matched:
+						matched_neighbours += 1
+				# If at least 3 neighbours are matched...
+				if (matched_neighbours >= 3):
+					all_pieces[x][y].matched = false
+					all_pieces[x][y].special = true
+					all_pieces[x][y].get_node("Sparkle").visible = true
+					all_pieces[x][y].colour = all_pieces[x][y].old_colour
+					print("New special block. Colour: " + all_pieces[x][y].colour)
+
+func match_special_blocks():
+	for x in width:
+		for y in height:
+			# If this piece is matched and special...
+			if (all_pieces[x][y].matched && all_pieces[x][y].special):
+				var neighbours = get_neighbours(x, y, true)
+				for n in neighbours:
+					if (!all_pieces[n.x][n.y].matched):
+						all_pieces[n.x][n.y].matched = true
+						round_matched += 1
+
 func _on_collapse_timer_timeout():
 	collapse_columns()
 	collapse_needed = false
@@ -1030,6 +1067,8 @@ func _on_clear_timer_timeout():
 	diag_cross_matched = count_diag_corners()
 	positive_diagonal_matched = count_positive_diagonal_matches()
 	negative_diagonal_matched = count_negative_diagonal_matches()
+	spawn_special_blocks()
+	match_special_blocks()
 	clear_matches()
 	clear_broken()
 	var pitch_shift = 0.7 + (round_matched / 10.0)
