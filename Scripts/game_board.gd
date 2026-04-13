@@ -39,10 +39,10 @@ func setup_from_scratch():
 	grid.active = true
 	grid.end_turn.connect(_on_grid_end_turn)
 	active_scene = grid
-	get_node("Score_Label").text = "Score: " + str(score)
-	get_node("Turns_Label").text = "Turns Left: " + str(turns_left)  + "/" + str(max_turns)
-	get_node("Goal_Label").text = "Goal: 0/" + str(goal)
-	get_node("Diamonds_Label").text = "Shards: " + str(diamonds)
+	get_node("UI Container/Score_Label").text = "Score: " + str(score)
+	get_node("UI Container/Turns_Label").text = "Turns Left: " + str(turns_left)  + "/" + str(max_turns)
+	get_node("UI Container/Goal_Label").text = "Goal: 0/" + str(goal)
+	get_node("UI Container/Diamonds_Label").text = "Shards: " + str(diamonds)
 	setup_deck()
 
 # Creates the game board from the appropriate lines of the save file
@@ -83,10 +83,10 @@ func setup_from_file(save_lines):
 	levelSelect.setup_from_array(json.data)
 	levelSelect.position = Vector2(64, 80)
 	active_scene = levelSelect
-	get_node("Score_Label").text = "Score: " + str(score)
-	get_node("Turns_Label").text = "Turns Left: " + str(turns_left)  + "/" + str(max_turns)
-	get_node("Goal_Label").text = "Goal: 0/" + str(goal)
-	get_node("Diamonds_Label").text = "Shards: " + str(diamonds)
+	get_node("UI Container/Score_Label").text = "Score: " + str(score)
+	get_node("UI Container/Turns_Label").text = "Turns Left: " + str(turns_left)  + "/" + str(max_turns)
+	get_node("UI Container/Goal_Label").text = "Goal: 0/" + str(goal)
+	get_node("UI Container/Diamonds_Label").text = "Shards: " + str(diamonds)
 
 func setup_deck():
 	var base_deck = get_parent().get_node("Globals").starting_deck
@@ -105,7 +105,7 @@ func _process(delta):
 
 func check_win(total_matched):
 	print("Check win")
-	get_node("Goal_Label").text = "Goal: " + str(total_matched) + "/" + str(goal)
+	get_node("UI Container/Goal_Label").text = "Goal: " + str(total_matched) + "/" + str(goal)
 	if turns_left <= 0:
 		print("You lose!")
 		game_finished.emit("LOSE")
@@ -149,26 +149,26 @@ func level_select():
 
 func add_diamonds(num_to_add):
 	diamonds += num_to_add
-	get_node("Diamonds_Label").text = "Shards: " + str(diamonds)
+	get_node("UI Container/Diamonds_Label").text = "Shards: " + str(diamonds)
 
 func spend_diamonds(num_to_spend):
 	if (diamonds < num_to_spend):
 		return false
 	diamonds -= num_to_spend
-	get_node("Diamonds_Label").text = "Shards: " + str(diamonds)
+	get_node("UI Container/Diamonds_Label").text = "Shards: " + str(diamonds)
 	return true
 
 func add_score(points):
 	score += points
-	get_node("Score_Label").text = "Score: " + str(score)
+	get_node("UI Container/Score_Label").text = "Score: " + str(score)
 
 func reset_score():
 	score = 0
-	get_node("Score_Label").text = "Score: " + str(score)
+	get_node("UI Container/Score_Label").text = "Score: " + str(score)
 
 func reduce_turns(num_turns):
 	turns_left -= num_turns
-	get_node("Turns_Label").text = "Turns Left: " + str(turns_left)  + "/" + str(max_turns)
+	get_node("UI Container/Turns_Label").text = "Turns Left: " + str(turns_left)  + "/" + str(max_turns)
 
 
 func _on_side_board_card_activated(card: Card):
@@ -260,7 +260,7 @@ func navigate(level, challenge_debuffs = ""):
 			grid.end_turn.connect(_on_grid_end_turn)
 			# reset_score()
 			goal *= 1.5
-			get_node("Goal_Label").text = "Goal: 0/" + str(goal)
+			get_node("UI Container/Goal_Label").text = "Goal: 0/" + str(goal)
 			transition_to(grid)
 			set_grid_effects()
 			grid.clear_board()
@@ -277,7 +277,7 @@ func navigate(level, challenge_debuffs = ""):
 			grid.end_turn.connect(_on_grid_end_turn)
 			# reset_score()
 			goal *= 1.5
-			get_node("Goal_Label").text = "Goal: " + str(goal)
+			get_node("UI Container/Goal_Label").text = "Goal: " + str(goal)
 			transition_to(grid)
 			set_grid_effects()
 			grid.clear_board()
@@ -300,7 +300,7 @@ func navigate(level, challenge_debuffs = ""):
 			grid.end_turn.connect(_on_grid_end_turn)
 			# reset_score()
 			goal *= 1.5
-			get_node("Goal_Label").text = "Goal: " + str(goal)
+			get_node("UI Container/Goal_Label").text = "Goal: " + str(goal)
 			transition_to(grid)
 			set_grid_effects()
 			grid.clear_board()
@@ -408,15 +408,15 @@ func recharge():
 	turns_left += 5
 	if (turns_left > max_turns):
 		turns_left = max_turns
-	get_node("Turns_Label").text = "Turns Left: " + str(turns_left) + "/" + str(max_turns)
+	get_node("UI Container/Turns_Label").text = "Turns Left: " + str(turns_left) + "/" + str(max_turns)
 
 func set_num_turns(num_turns: int):
 	turns_left = num_turns
-	get_node("Turns_Label").text = "Turns Left: " + str(turns_left) + "/" + str(max_turns)
+	get_node("UI Container/Turns_Label").text = "Turns Left: " + str(turns_left) + "/" + str(max_turns)
 
 func set_max_turns(turns: int):
 	max_turns = turns
-	get_node("Turns_Label").text = "Turns Left: " + str(turns_left) + "/" + str(max_turns)
+	get_node("UI Container/Turns_Label").text = "Turns Left: " + str(turns_left) + "/" + str(max_turns)
 
 func increase_max_turns(turns: int):
 	set_max_turns(max_turns + turns)
