@@ -921,12 +921,10 @@ func count_corners():
 				for h in height:
 					if (all_pieces[x][h].matched && all_pieces[x][h].matches(colour)):
 						col_matches += 1
-						all_pieces[x][h].old_colour = all_pieces[x][h].colour
 						all_pieces[x][h].colour = "BLANK"
 				for w in width:
 					if (all_pieces[w][y].matched && all_pieces[w][y].matches(colour)):
 						row_matches += 1
-						all_pieces[w][y].old_colour = all_pieces[w][y].colour
 						all_pieces[w][y].colour = "BLANK"
 				if (col_matches >= 3):
 					corner_matches += col_matches
@@ -981,7 +979,6 @@ func count_diag_corners():
 					if (h >= height || h < 0): continue
 					if (all_pieces[w][h].matched && all_pieces[w][h].colour != "BLANK"):
 						pos_matches += 1
-						all_pieces[w][h].old_colour = all_pieces[w][h].colour
 						all_pieces[w][h].colour = "BLANK"
 				var negative_c = y + x
 				for w in width:
@@ -990,7 +987,6 @@ func count_diag_corners():
 					if (h >= height || h < 0): continue
 					if (all_pieces[w][h].matched && all_pieces[w][h].colour != "BLANK"):
 						neg_matches += 1
-						all_pieces[w][h].old_colour = all_pieces[w][h].colour
 						all_pieces[w][h].colour = "BLANK"
 				if (pos_matches >= 3):
 					corner_matches += pos_matches
@@ -1042,8 +1038,24 @@ func spawn_special_blocks():
 					all_pieces[x][y].matched = false
 					all_pieces[x][y].special = true
 					all_pieces[x][y].get_node("Sparkle").visible = true
-					all_pieces[x][y].colour = all_pieces[x][y].old_colour
+					all_pieces[x][y].get_node("Sparkle").material.set_shader_parameter("surface", all_pieces[x][y].get_node("Sprite2D").texture)
+					# Assign the colour which was previously removed
+					if all_pieces[x][y] is RedPiece:
+						all_pieces[x][y].colour = "red"
+					if all_pieces[x][y] is OrangePiece:
+						all_pieces[x][y].colour = "orange"
+					if all_pieces[x][y] is YellowPiece:
+						all_pieces[x][y].colour = "yellow"
+					if all_pieces[x][y] is GreenPiece:
+						all_pieces[x][y].colour = "green"
+					if all_pieces[x][y] is BluePiece:
+						all_pieces[x][y].colour = "blue"
+					if all_pieces[x][y] is PurplePiece:
+						all_pieces[x][y].colour = "purple"
+					if all_pieces[x][y] is RainbowPiece:
+						all_pieces[x][y].colour = "redorangeyellowgreenbluepurple"
 					print("New special block. Colour: " + all_pieces[x][y].colour)
+	recolour_for_exclusion()
 
 func match_special_blocks():
 	for x in width:
