@@ -123,10 +123,12 @@ func end_game(game_state):
 		status_screen.name = "status_screen"
 		add_child(status_screen)
 		status_screen.set_label_text(get_node("gameboard").score)
+		var diamonds = get_node("gameboard").diamonds
+		get_node("gameboard").queue_free()
 		status_screen.position = Vector2(640, 360)
 		move_child(status_screen, 0)
 		status_screen.z_index = 6
-		status_screen.get_node("CloseButton").pressed.connect(start_black_market)
+		status_screen.get_node("CloseButton").pressed.connect(start_black_market.bind(diamonds))
 		
 	if (game_state == "WIN"):
 		var tween: Tween = create_tween()
@@ -144,11 +146,9 @@ func end_game(game_state):
 		tween2.tween_property(get_node("ShutterSprite"),"position", Vector2(640, -640), 0.3).set_ease(Tween.EASE_OUT)
 		tween2.play()
 
-func start_black_market():
+func start_black_market(diamonds):
 	remove_child(get_node("status_screen"))
 	get_node("Globals").starting_shards = 0
-	var diamonds = get_node("gameboard").diamonds
-	get_node("gameboard").queue_free()
 	# Go to the black market between runs
 	var market: BlackMarket = preload("res://Scenes/black_market.tscn").instantiate()
 	market.set_num_diamonds(diamonds)
