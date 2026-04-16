@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/level_select.gd" id="1_p0821"]
 [ext_resource type="Material" uid="uid://22mme7s2k48" path="res://Shaders/crt_mat.tres" id="2_byhsc"]
-[ext_resource type="Theme" uid="uid://bh1prigd3w04f" path="res://Shaders/astrolab_font.tres" id="3_m5138"]
+[ext_resource type="Theme" uid="uid://bh1prigd3w04f" path="res://Fonts/astrolab_font.tres" id="3_m5138"]
 [ext_resource type="Texture2D" uid="uid://beb5hjr7wxg4c" path="res://Art/meteor01.png" id="4_rbv35"]
 [ext_resource type="Material" uid="uid://bawdt5u4h6fv4" path="res://Shaders/pixelate_mat.tres" id="5_j4mgv"]
 

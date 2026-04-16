@@ -431,16 +431,22 @@ func shop(shop_item: ShopItem):
 		recharge()
 	if (shop_item.item_name == "Improve Horizontal Efficiency"):
 		horizontal_multiplier += 0.1
+		get_node("SideBoard/EfficiencyTracker/EfficiencyHorizontal").text = "-: %.1f" % horizontal_multiplier
 	if (shop_item.item_name == "Improve Vertical Efficiency"):
 		vertical_multiplier += 0.1
+		get_node("SideBoard/EfficiencyTracker/EfficiencyVertical").text = "|: %.1f" % vertical_multiplier
 	if (shop_item.item_name == "Improve Cross Efficiency"):
 		cross_multiplier += 0.5
+		get_node("SideBoard/EfficiencyTracker/EfficiencyCross").text = "+: %.1f" % cross_multiplier
 	if (shop_item.item_name == "Improve Diagonal Efficiency \\"):
-		positive_diag_multiplier += 0.1
-	if (shop_item.item_name == "Improve Diagonal Efficiency /"):
 		negative_diag_multiplier += 0.1
+		get_node("SideBoard/EfficiencyTracker/EfficiencyNegative").text = "\\: %.1f" % negative_diag_multiplier
+	if (shop_item.item_name == "Improve Diagonal Efficiency /"):
+		positive_diag_multiplier += 0.1
+		get_node("SideBoard/EfficiencyTracker/EfficiencyPositive").text = "/: %.1f" % positive_diag_multiplier
 	if (shop_item.item_name == "Improve X Efficiency"):
 		cross_diag_multiplier += 0.5
+		get_node("SideBoard/EfficiencyTracker/EfficiencyX").text = "X: %.1f" % cross_diag_multiplier
 	if (shop_item.card != null):
 		deck.append(Card.card_from_string(shop_item.card._to_string()))
 
