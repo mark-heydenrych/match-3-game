@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://bt3o7e3sy2ltu"]
+[gd_scene load_steps=5 format=3 uid="uid://bt3o7e3sy2ltu"]
 
 [ext_resource type="Script" path="res://Scripts/SideBoard.gd" id="1_r5qj3"]
 [ext_resource type="Texture2D" uid="uid://dpq8fbhh5hka7" path="res://Art/maintenance_panel.png" id="2_ao2gv"]
+[ext_resource type="Theme" uid="uid://bavh6iw4w1foe" path="res://Fonts/dancefloor_font.tres" id="2_hpxxr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g77gm"]
 size = Vector2(160, 720)
@@ -30,7 +31,69 @@ offset_right = 1234.0
 offset_bottom = 49.0
 text = "View Chips"
 
+[node name="EfficienyLabel" type="RichTextLabel" parent="."]
+offset_left = 828.0
+offset_top = 501.0
+offset_right = 1249.0
+offset_bottom = 531.0
+theme = ExtResource("2_hpxxr")
+bbcode_enabled = true
+text = "[center]EFFICIENY TRACKER[/center]"
+
+[node name="EfficiencyTracker" type="GridContainer" parent="."]
+offset_left = 810.0
+offset_top = 544.0
+offset_right = 1270.0
+offset_bottom = 624.0
+columns = 3
+
+[node name="EfficiencyHorizontal" type="RichTextLabel" parent="EfficiencyTracker"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 3
+theme = ExtResource("2_hpxxr")
+bbcode_enabled = true
+text = "-: 1.0"
+
+[node name="EfficiencyVertical" type="RichTextLabel" parent="EfficiencyTracker"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 3
+theme = ExtResource("2_hpxxr")
+bbcode_enabled = true
+text = "|: 1.0"
+
+[node name="EfficiencyCross" type="RichTextLabel" parent="EfficiencyTracker"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 3
+theme = ExtResource("2_hpxxr")
+bbcode_enabled = true
+text = "+: 1.0"
+
+[node name="EfficiencyPositive" type="RichTextLabel" parent="EfficiencyTracker"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 3
+theme = ExtResource("2_hpxxr")
+text = "/: 1.0"
+
+[node name="EfficiencyNegative" type="RichTextLabel" parent="EfficiencyTracker"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 3
+theme = ExtResource("2_hpxxr")
+text = "\\: 1.0"
+
+[node name="EfficiencyX" type="RichTextLabel" parent="EfficiencyTracker"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 3
+theme = ExtResource("2_hpxxr")
+text = "X: 1.0"
+
 [node name="PanelSprite" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(960, 360)
 texture = ExtResource("2_ao2gv")
 
