@@ -1,34 +1,33 @@
 [gd_scene load_steps=6 format=3 uid="uid://dolkw7qgu36ri"]
 
 [ext_resource type="Script" path="res://Scripts/level_select.gd" id="1_p0821"]
-[ext_resource type="Material" uid="uid://22mme7s2k48" path="res://Shaders/crt_mat.tres" id="2_byhsc"]
-[ext_resource type="Theme" uid="uid://bh1prigd3w04f" path="res://Fonts/astrolab_font.tres" id="3_m5138"]
+[ext_resource type="Shader" path="res://Shaders/quantize.gdshader" id="4_kpq3t"]
 [ext_resource type="Texture2D" uid="uid://beb5hjr7wxg4c" path="res://Art/meteor01.png" id="4_rbv35"]
-[ext_resource type="Material" uid="uid://bawdt5u4h6fv4" path="res://Shaders/pixelate_mat.tres" id="5_j4mgv"]
+[ext_resource type="Theme" uid="uid://bh1prigd3w04f" path="res://Fonts/astrolab_font.tres" id="5_3q075"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2efws"]
+shader = ExtResource("4_kpq3t")
+shader_parameter/texture_mode = 1
+shader_parameter/quantize_size = 2
+shader_parameter/snap_to_world = null
+shader_parameter/limit_subpixels = true
 
 [node name="LevelSelect" type="Node2D"]
 script = ExtResource("1_p0821")
 
-[node name="Overlay" type="ColorRect" parent="."]
-material = ExtResource("2_byhsc")
-offset_right = 518.0
-offset_bottom = 614.0
-
-[node name="Grid" type="GridContainer" parent="Overlay"]
-layout_mode = 0
+[node name="Grid" type="GridContainer" parent="."]
 offset_top = 64.0
 offset_right = 518.0
 offset_bottom = 678.0
 columns = 3
 
-[node name="LeftSub" type="Control" parent="Overlay/Grid"]
+[node name="LeftSub" type="Control" parent="Grid"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Left" type="TextureButton" parent="Overlay/Grid"]
-material = ExtResource("5_j4mgv")
+[node name="Left" type="TextureButton" parent="Grid"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -36,22 +35,20 @@ texture_normal = ExtResource("4_rbv35")
 stretch_mode = 3
 flip_h = true
 
-[node name="Middle" type="TextureButton" parent="Overlay/Grid"]
-material = ExtResource("5_j4mgv")
+[node name="Middle" type="TextureButton" parent="Grid"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture_normal = ExtResource("4_rbv35")
 stretch_mode = 3
 
-[node name="RightSub" type="Control" parent="Overlay/Grid"]
+[node name="RightSub" type="Control" parent="Grid"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Right" type="TextureButton" parent="Overlay/Grid"]
-material = ExtResource("5_j4mgv")
+[node name="Right" type="TextureButton" parent="Grid"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -59,36 +56,66 @@ texture_normal = ExtResource("4_rbv35")
 stretch_mode = 3
 flip_v = true
 
-[node name="LeftLabelSub" type="Control" parent="Overlay/Grid"]
+[node name="LeftLabelSub" type="Control" parent="Grid"]
 visible = false
 custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="LeftLabel" type="RichTextLabel" parent="Overlay/Grid"]
+[node name="LeftLabel" type="RichTextLabel" parent="Grid"]
 custom_minimum_size = Vector2(170, 200)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme = ExtResource("3_m5138")
+theme = ExtResource("5_3q075")
 bbcode_enabled = true
 
-[node name="MiddleLabel" type="RichTextLabel" parent="Overlay/Grid"]
+[node name="MiddleLabel" type="RichTextLabel" parent="Grid"]
 custom_minimum_size = Vector2(170, 200)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme = ExtResource("3_m5138")
+theme = ExtResource("5_3q075")
 bbcode_enabled = true
 text = "[center][color=3DDA6B]PUZZLE[/color][/center]"
 
-[node name="Radar" type="RichTextLabel" parent="Overlay/Grid"]
+[node name="Radar" type="RichTextLabel" parent="Grid"]
 custom_minimum_size = Vector2(170, 200)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme = ExtResource("3_m5138")
+theme = ExtResource("5_3q075")
 bbcode_enabled = true
 text = "[center][color=3DDA6B]Rare Mundanium Detected Adverse Conditions Unknown[/color][/center]"
 fit_content = true
+
+[node name="ScanningLine" type="ColorRect" parent="."]
+offset_top = -100.0
+offset_right = 518.0
+offset_bottom = -92.0
+color = Color(0.239216, 0.854902, 0.419608, 1)
+
+[node name="ScanningPane" type="ColorRect" parent="."]
+offset_top = -92.0
+offset_right = 518.0
+offset_bottom = 708.0
+color = Color(0.301961, 0.301961, 0.301961, 1)
+
+[node name="ScanningLabel" type="RichTextLabel" parent="."]
+offset_top = 27.0
+offset_right = 518.0
+offset_bottom = 67.0
+theme = ExtResource("5_3q075")
+theme_override_colors/default_color = Color(0.239216, 0.854902, 0.419608, 1)
+bbcode_enabled = true
+text = "[center]SCANNING...[/center]"
+visible_characters = 8
+visible_characters_behavior = 1
+visible_ratio = 0.727273
+
+[node name="Overlay" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_2efws")
+offset_right = 518.0
+offset_bottom = 614.0
+mouse_filter = 2
