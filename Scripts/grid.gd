@@ -631,6 +631,17 @@ func recheck_matches():
 		countdown_targets()
 		end_turn.emit(moved)
 
+func crack_hard_blocks():
+	for i in width:
+		for j in height:
+			if (all_pieces[i][j].matched):
+			# If any neighbour is stone or virus, reduce its durability and crack it
+				var neighbours = get_neighbours(i, j)
+				for n in neighbours:
+					if (all_pieces[n.x][n.y].colour == "Stone" || all_pieces[n.x][n.y].colour == "Virus" || all_pieces[n.x][n.y].colour == "XStone" || all_pieces[n.x][n.y].colour == "XVirus"):
+						all_pieces[n.x][n.y].durability -= 1
+						all_pieces[n.x][n.y].crack_piece()
+
 func clear_matches():
 	for i in width:
 		for j in height:
@@ -643,10 +654,6 @@ func clear_matches():
 					collapse_needed = true
 				# If any neighbour is stone or virus, reduce its durability and crack it
 				var neighbours = get_neighbours(i, j)
-				for n in neighbours:
-					if (all_pieces[n.x][n.y].colour == "Stone" || all_pieces[n.x][n.y].colour == "Virus" || all_pieces[n.x][n.y].colour == "XStone" || all_pieces[n.x][n.y].colour == "XVirus"):
-						all_pieces[n.x][n.y].durability -= 1
-						all_pieces[n.x][n.y].crack_piece()
 	if (collapse_needed):
 		collapse_timer.start()
 	else:
@@ -1064,7 +1071,10 @@ func match_special_blocks():
 			if (all_pieces[x][y].matched && all_pieces[x][y].special):
 				var neighbours = get_neighbours(x, y, true)
 				for n in neighbours:
-					if (!all_pieces[n.x][n.y].matched):
+					if (all_pieces[n.x][n.y].colour == "Stone" || all_pieces[n.x][n.y].colour == "Virus" || all_pieces[n.x][n.y].colour == "XStone" || all_pieces[n.x][n.y].colour == "XVirus"):
+						all_pieces[n.x][n.y].durability -= 1
+						all_pieces[n.x][n.y].crack_piece()
+					elif (!all_pieces[n.x][n.y].matched):
 						all_pieces[n.x][n.y].matched = true
 						round_matched += 1
 
@@ -1080,6 +1090,7 @@ func _on_clear_timer_timeout():
 	positive_diagonal_matched = count_positive_diagonal_matches()
 	negative_diagonal_matched = count_negative_diagonal_matches()
 	spawn_special_blocks()
+	crack_hard_blocks()
 	match_special_blocks()
 	clear_matches()
 	clear_broken()
