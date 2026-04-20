@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cacs4bb2yslaa"]
+
+[ext_resource type="Shader" path="res://Shaders/lightning.gdshader" id="1_r4nsn"]
+
+[resource]
+shader = ExtResource("1_r4nsn")
+shader_parameter/lightning_number = 5
+shader_parameter/amplitude = Vector2(2, 1)
+shader_parameter/offset = 0.5
+shader_parameter/thickness = 0.02
+shader_parameter/speed = 6.0
+shader_parameter/base_color = Color(1, 1, 1, 1)
+shader_parameter/glow_thickness = 0.08
+shader_parameter/glow_color = Color(0.2, 0, 0.8, 0)
+shader_parameter/alpha = 1.0
