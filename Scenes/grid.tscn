@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://c256pq7xrpa0l"]
+[gd_scene load_steps=5 format=3 uid="uid://c256pq7xrpa0l"]
 
 [ext_resource type="Script" path="res://Scripts/grid.gd" id="1_m0tp3"]
 [ext_resource type="Texture2D" uid="uid://kgu5km7ldcbm" path="res://Art/abwabwa.png" id="2_1t75i"]
+[ext_resource type="Material" uid="uid://cacs4bb2yslaa" path="res://Shaders/lightning_mat.tres" id="3_etc4r"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_nowxl"]
 particle_flag_disable_z = true
@@ -28,6 +29,8 @@ one_shot = true
 wait_time = 0.5
 one_shot = true
 
+[node name="Lightning_Timer" type="Timer" parent="."]
+
 [node name="Dust_Emitter" type="GPUParticles2D" parent="."]
 z_index = 1
 position = Vector2(320, 80)
@@ -39,6 +42,20 @@ lifetime = 0.8
 one_shot = true
 collision_base_size = 0.0
 
+[node name="HorizontalLightning" type="ColorRect" parent="."]
+visible = false
+material = ExtResource("3_etc4r")
+offset_top = -64.0
+offset_right = 720.0
+
+[node name="VerticalLightning" type="ColorRect" parent="."]
+visible = false
+material = ExtResource("3_etc4r")
+offset_right = 720.0
+offset_bottom = 64.0
+rotation = 1.5708
+
 [connection signal="timeout" from="Collapse_Timer" to="." method="_on_collapse_timer_timeout"]
 [connection signal="timeout" from="Clear_Timer" to="." method="_on_clear_timer_timeout"]
 [connection signal="timeout" from="Refill_Timer" to="." method="_on_refill_timer_timeout"]
+[connection signal="timeout" from="Lightning_Timer" to="." method="_on_lightning_timer_timeout"]

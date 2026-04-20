@@ -1041,7 +1041,7 @@ func spawn_special_blocks():
 					if all_pieces[n.x][n.y].matched:
 						matched_neighbours += 1
 				# If at least 3 neighbours are matched...
-				if (matched_neighbours >= 3):
+				if (matched_neighbours == 3):
 					all_pieces[x][y].matched = false
 					all_pieces[x][y].special = true
 					all_pieces[x][y].get_node("Sparkle").visible = true
@@ -1062,6 +1062,30 @@ func spawn_special_blocks():
 					if all_pieces[x][y] is RainbowPiece:
 						all_pieces[x][y].colour = "redorangeyellowgreenbluepurple"
 					print("New special block. Colour: " + all_pieces[x][y].colour)
+				if (matched_neighbours >= 4):
+					print("Super")
+					var x_pos = x_offset + x * 64 + 32
+					var y_pos = y_offset + y * 64 - 32
+					get_node("HorizontalLightning").position = Vector2(0, y_pos)
+					get_node("HorizontalLightning").visible = true
+					get_node("VerticalLightning").position = Vector2(x_pos, 0)
+					get_node("VerticalLightning").visible = true
+					for c in width:
+						if (all_pieces[c][y].colour == "Stone" || all_pieces[c][y].colour == "Virus" || all_pieces[c][y].colour == "XStone" || all_pieces[c][y].colour == "XVirus"):
+							all_pieces[c][y].durability -= 1
+							all_pieces[c][y].crack_piece()
+						elif (!all_pieces[c][y].matched):
+							all_pieces[c][y].matched = true
+							round_matched += 1
+					for r in height:
+						if (all_pieces[x][r].colour == "Stone" || all_pieces[x][r].colour == "Virus" || all_pieces[x][r].colour == "XStone" || all_pieces[x][r].colour == "XVirus"):
+							all_pieces[x][r].durability -= 1
+							all_pieces[x][r].crack_piece()
+						elif (!all_pieces[x][r].matched):
+							all_pieces[x][r].matched = true
+							round_matched += 1
+					# Still need to handle diagonals
+					get_node("Lightning_Timer").start(0.5)
 	recolour_for_exclusion()
 
 func match_special_blocks():
@@ -1147,6 +1171,10 @@ func _on_refill_timer_timeout():
 	negative_diagonal_matched = 0
 	diag_cross_matched = 0
 	active = true
+
+func _on_lightning_timer_timeout():
+	get_node("HorizontalLightning").visible = false
+	get_node("VerticalLightning").visible = false
 
 func count_challenge_blocks():
 	var num_blocks = 0
