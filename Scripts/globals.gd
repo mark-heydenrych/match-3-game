@@ -6,13 +6,13 @@ extends Node2D
 var MAX_INT = 9223372036854775807
 
 # Debuffs that are non-instant have max_int as durability since they are only removed by debugging
-var debuffs = [["Three's a\nCrowd", MAX_INT, 0],
-			   ["Half", MAX_INT, 0],
-			   ["Harden\nBlocks", 1, 0],
-			   ["Stone\nPrism", 1, 0],
-			   ["Exclusion\nZones", 1, 0],
-			   ["Discharge", 1, 0],
-			   ["Chaos", MAX_INT, 1]
+var debuffs = [["Three's a\nCrowd", MAX_INT, 0, "A maximum of 3 blocks can match per turn"],
+			   ["Half", MAX_INT, 0, "Score is halved for all matches"],
+			   ["Harden\nBlocks", 1, 0, "All hard blocks get 1 stage harder"],
+			   ["Stone\nPrism", 1, 0, "Spawns several hard blocks at random"],
+			   ["Exclusion\nZones", 1, 0, "Spawns several exclusion zones"],
+			   ["Discharge", 1, 0, "Discharges some energy from the battery"],
+			   ["Chaos", MAX_INT, 1, "Randomly changes the matching rules each turn"]
 			  ]
 
 var all_perks = [["Bishop", 3, 3, "Updates match mode to Diagonal. Duration: 3 Turns"],
@@ -50,7 +50,7 @@ var card_upgrades= [
 	["Starting Chip: Crack Blocks", 40, false, false],
 ]
 
-var sideboard_unlocked = true
+var sideboard_unlocked = false
 
 var radar_unlocked = false
 
@@ -62,7 +62,7 @@ var starting_shards = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	max_turns = 250
+	max_turns = 25
 	num_card_slots = 1
 	print("Max turns: " + str(max_turns))
 	starting_deck = []
@@ -98,7 +98,7 @@ func get_shop_cards(num_cards: int):
 
 func get_random_debuff():
 	var debuff = debuffs.pick_random()
-	return Card.new_card(debuff[0], debuff[1], debuff[2], "DEBUFF")
+	return Card.new_card(debuff[0], debuff[1], debuff[2], debuff[3], "DEBUFF")
 
 func add_random_card_to_start():
 	var card = all_perks.pick_random()
