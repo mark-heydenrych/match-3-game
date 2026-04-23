@@ -15,18 +15,18 @@ var debuffs = [["Three's a\nCrowd", MAX_INT, 0],
 			   ["Chaos", MAX_INT, 1]
 			  ]
 
-var all_perks = [["Bishop", 3, 3],
-				 ["Tetris", 3, 3],
-				 ["Double", 3, 4],
-				 ["Queen", 3, 5],
-				 ["Time Stop", 3, 7],
-				 ["Crack Blocks", 0, 5],
-				 ["Colourblind", 3, 5],
-				 ["Prism", 0, 6],
-				 ["Quantum\nTranslocator", 3, 6],
-				 ["Clear\nExclusions", 0, 5],
-				 ["Shuffle", 0, 2],
-				 ["Antivirus", 0, 4]
+var all_perks = [["Bishop", 3, 3, "Updates match mode to Diagonal. Duration: 3 Turns"],
+				 ["Tetris", 3, 3, "Updates match mode to Tetris. Duration: 3 Turns"],
+				 ["Double", 3, 4, "Doubles score received from matches. Duration: 3 Turns"],
+				 ["Queen", 3, 5, "Updates match mode to straight and diagonal. Duration: 3 Turns"],
+				 ["Time Stop", 3, 7, "Stops Time for 3 Turns"],
+				 ["Crack Blocks", 0, 5, "Cracks All Hard Blocks"],
+				 ["Colourblind", 3, 5, "Red and Green blocks can match with each other. Duration: 3 Tursn"],
+				 ["Prism", 0, 6, "Creates several rainbow blocks"],
+				 ["Quantum\nTranslocator", 3, 6, "Allows blocks to be moved anywhere is a single move. Duration: 3 Turns"],
+				 ["Clear\nExclusions", 0, 5, "Clears all Exclusion Zones (Red X)"],
+				 ["Shuffle", 0, 2, "Shuffles the location of all blocks"],
+				 ["Antivirus", 0, 4, "Removes all active viruses"]
 				 ]
 
 var slot_upgrades = [
@@ -50,7 +50,7 @@ var card_upgrades= [
 	["Starting Chip: Crack Blocks", 40, false, false],
 ]
 
-var sideboard_unlocked = false
+var sideboard_unlocked = true
 
 var radar_unlocked = false
 
@@ -62,7 +62,7 @@ var starting_shards = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	max_turns = 25
+	max_turns = 250
 	num_card_slots = 1
 	print("Max turns: " + str(max_turns))
 	starting_deck = []

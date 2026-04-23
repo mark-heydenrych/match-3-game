@@ -92,7 +92,7 @@ func setup_deck():
 	var base_deck = get_parent().get_node("Globals").starting_deck
 	var num_cards = base_deck.size()
 	for i in num_cards:
-		var card = Card.new_card(base_deck[i][0], base_deck[i][1], base_deck[i][2])
+		var card = Card.new_card(base_deck[i][0], base_deck[i][1], base_deck[i][2], base_deck[i][3])
 		deck.append(card)
 
 func update_check_type():

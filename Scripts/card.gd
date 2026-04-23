@@ -9,13 +9,16 @@ var card_active: bool = false
 var durability: int
 var cost: int
 var type: String = ""
+var tooltip: String = ""
 
-static func new_card(_card_name: String, _durability: int, _cost: int, _type: String = ""):
+static func new_card(_card_name: String, _durability: int, _cost: int, _tooltip: String, _type: String = ""):
 	var card = load("res://Scenes/card.tscn").instantiate()
 	card.update_name(_card_name)
 	card.durability = _durability
 	card.cost = _cost
 	card.type = _type
+	card.tooltip = _tooltip
+	card.get_node("TooltipHolder").set_tooltip_text(_tooltip)
 	return card
 
 # Called when the node enters the scene tree for the first time.
@@ -29,18 +32,18 @@ func _process(delta):
 	pass
 
 func _to_string():
-	var result = card_name + "," + str(durability) + "," + str(cost) + "," + type + "," + str(position) + "," + str(card_active)
+	var result = card_name + "," + str(durability) + "," + str(cost) + "," + tooltip + "," + type + "," + str(position) + "," + str(card_active)
 	return result
 
 static func card_from_string(json_string: String):
 	var json_elements = json_string.split(",")
-	var card = new_card(json_elements[0], int(json_elements[1]), int(json_elements[2]), json_elements[3])
-	if (json_elements[6] == "true"):
+	var card = new_card(json_elements[0], int(json_elements[1]), int(json_elements[2]), json_elements[3], json_elements[4])
+	if (json_elements[7] == "true"):
 		card.card_active = true
 	else:
 		card.card_active = false
-	var x = json_elements[4].right(-1)
-	var y = json_elements[5].left(-1)
+	var x = json_elements[5].right(-1)
+	var y = json_elements[6].left(-1)
 	card.position = Vector2(int(x), int(y))
 	return card
 
