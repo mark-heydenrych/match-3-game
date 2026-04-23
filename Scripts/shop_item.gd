@@ -4,12 +4,14 @@ extends Node2D
 @export var cost: int
 @export var item_name: String
 @export var card: Card
+@export var tooltip: String
 # Likely other members
 
-func _init(_cost: int, _name: String, _card: Card):
+func _init(_cost: int, _name: String, _card: Card, _tooltip: String):
 	cost = _cost
 	item_name = _name
 	card = _card
+	tooltip = _tooltip
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

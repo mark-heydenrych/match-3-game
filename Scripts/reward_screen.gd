@@ -9,7 +9,7 @@ var card = null
 func _ready():
 	# Add cards from the globals
 	var _card = get_tree().get_root().get_node("BaseScene").get_node("Globals").get_shop_cards(1)[0]
-	card = Card.new_card(_card[0], _card[1], _card[2])
+	card = Card.new_card(_card[0], _card[1], _card[2], _card[3])
 	add_child(card)
 	card.position = Vector2(206, 170)
 	pass # Replace with function body.
