@@ -161,6 +161,8 @@ var helper_move = false
 var bombs_matched = 0
 var bonuses_matched = 0
 
+var test_y_offset = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	total_matched = 0
@@ -708,6 +710,7 @@ func toggle_visibility():
 
 func _input(event):
 	if (active):
+		
 		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_V:
 			toggle_visibility()
 		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_S:
@@ -718,6 +721,9 @@ func _input(event):
 			run_conveyers()
 		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_Q:
 			active_effects.append("TRANSLOCATOR")
+		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_B:
+			active_effects.append("MATCH_TYPE_DIAGONAL")
+			process_effects()
 		if event is InputEventMouseButton and event.is_pressed():
 			var pos = get_global_mouse_position()
 			first_touch = pixel_to_grid(pos.x, pos.y)
@@ -1063,28 +1069,56 @@ func spawn_special_blocks():
 						all_pieces[x][y].colour = "redorangeyellowgreenbluepurple"
 					print("New special block. Colour: " + all_pieces[x][y].colour)
 				if (matched_neighbours >= 4):
-					print("Super")
-					var x_pos = x_offset + x * 64 + 32
-					var y_pos = y_offset + y * 64 - 32
-					get_node("HorizontalLightning").position = Vector2(0, y_pos)
-					get_node("HorizontalLightning").visible = true
-					get_node("VerticalLightning").position = Vector2(x_pos, 0)
-					get_node("VerticalLightning").visible = true
-					for c in width:
-						if (all_pieces[c][y].colour == "Stone" || all_pieces[c][y].colour == "Virus" || all_pieces[c][y].colour == "XStone" || all_pieces[c][y].colour == "XVirus"):
-							all_pieces[c][y].durability -= 1
-							all_pieces[c][y].crack_piece()
-						elif (!all_pieces[c][y].matched):
-							all_pieces[c][y].matched = true
-							round_matched += 1
-					for r in height:
-						if (all_pieces[x][r].colour == "Stone" || all_pieces[x][r].colour == "Virus" || all_pieces[x][r].colour == "XStone" || all_pieces[x][r].colour == "XVirus"):
-							all_pieces[x][r].durability -= 1
-							all_pieces[x][r].crack_piece()
-						elif (!all_pieces[x][r].matched):
-							all_pieces[x][r].matched = true
-							round_matched += 1
-					# Still need to handle diagonals
+					if (match_type == MATCH_TYPE.STANDARD || match_type == MATCH_TYPE.QUEEN || match_type == MATCH_TYPE.TETRIS):
+						var x_pos = x_offset + x * 64 + 32
+						var y_pos = y_offset + y * 64 - 32
+						get_node("HorizontalLightning").position = Vector2(0, y_pos)
+						get_node("HorizontalLightning").visible = true
+						get_node("VerticalLightning").position = Vector2(x_pos, 0)
+						get_node("VerticalLightning").visible = true
+						for c in width:
+							if (all_pieces[c][y].colour == "Stone" || all_pieces[c][y].colour == "Virus" || all_pieces[c][y].colour == "XStone" || all_pieces[c][y].colour == "XVirus"):
+								all_pieces[c][y].durability -= 1
+								all_pieces[c][y].crack_piece()
+							elif (!all_pieces[c][y].matched):
+								all_pieces[c][y].matched = true
+								round_matched += 1
+						for r in height:
+							if (all_pieces[x][r].colour == "Stone" || all_pieces[x][r].colour == "Virus" || all_pieces[x][r].colour == "XStone" || all_pieces[x][r].colour == "XVirus"):
+								all_pieces[x][r].durability -= 1
+								all_pieces[x][r].crack_piece()
+							elif (!all_pieces[x][r].matched):
+								all_pieces[x][r].matched = true
+								round_matched += 1
+					if (match_type == MATCH_TYPE.DIAGONAL || match_type == MATCH_TYPE.QUEEN):
+						var positive_c = y - x
+						for w in width:
+							# Formula y = mx + c. The c is the offset from the centre diagonal. m is 1 for a perfect diagonal
+							var r = w + positive_c
+							if (r >= height || r < 0): continue
+							if (all_pieces[w][r].colour == "Stone" || all_pieces[w][r].colour == "Virus" || all_pieces[w][r].colour == "XStone" || all_pieces[w][r].colour == "XVirus"):
+								all_pieces[w][r].durability -= 1
+								all_pieces[w][r].crack_piece()
+							elif (!all_pieces[w][r].matched):
+								all_pieces[w][r].matched = true
+								round_matched += 1
+						var y_pos = (positive_c - 1) * 64 + 32
+						get_node("PosDiagonalLightning").visible = true
+						get_node("PosDiagonalLightning").position = Vector2(0, y_pos)
+						var negative_c = y + x
+						for w in width:
+							# Formula y = mx + c. The c is the offset from the centre diagonal. m is 1 for a perfect diagonal
+							var r = -w + negative_c
+							if (r >= height || r < 0): continue
+							if (all_pieces[w][r].colour == "Stone" || all_pieces[w][r].colour == "Virus" || all_pieces[w][r].colour == "XStone" || all_pieces[w][r].colour == "XVirus"):
+								all_pieces[w][r].durability -= 1
+								all_pieces[w][r].crack_piece()
+							elif (!all_pieces[w][r].matched):
+								all_pieces[w][r].matched = true
+								round_matched += 1
+						y_pos = (negative_c - 8) * 64 + 32
+						get_node("NegDiagonalLightning").visible = true
+						get_node("NegDiagonalLightning").position = Vector2(720, y_pos)
 					get_node("Lightning_Timer").start(0.5)
 	recolour_for_exclusion()
 
@@ -1175,6 +1209,8 @@ func _on_refill_timer_timeout():
 func _on_lightning_timer_timeout():
 	get_node("HorizontalLightning").visible = false
 	get_node("VerticalLightning").visible = false
+	get_node("PosDiagonalLightning").visible = false
+	get_node("NegDiagonalLightning").visible = false
 
 func count_challenge_blocks():
 	var num_blocks = 0
