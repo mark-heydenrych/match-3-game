@@ -34,7 +34,9 @@ func setup_from_array(_rooms):
 	print("Level select with index " + str(current_index))
 	challenge_debuffs = _rooms[2]
 	left_room = _rooms[3]
-	# get_node("Grid/Middle").text = "Puzzle"
+	get_node("Grid/Middle").disabled = false
+	get_node("Grid/Left").disabled = false
+	get_node("Grid/Right").disabled = false
 	get_node("Grid/Middle").pressed.connect(choose_level.bind("Puzzle"))
 	if (get_node("/root/BaseScene/Globals").sideboard_unlocked):
 		print("Adding special rooms")
@@ -77,6 +79,9 @@ func setup_from_array(_rooms):
 	get_node("Grid/LeftLabelSub").visible = !get_node("Grid/LeftLabel").visible
 
 func setup():
+	get_node("Grid/Middle").disabled = false
+	get_node("Grid/Left").disabled = false
+	get_node("Grid/Right").disabled = false
 	get_node("ScanningLine").position = Vector2(0,-100)
 	get_node("ScanningPane").position = Vector2(0,-92)
 	get_node("ScanningLabel").visible_characters = 8
@@ -174,6 +179,9 @@ func choose_level(level):
 		current_index = current_index + 1
 		get_node("/root/BaseScene/AudioManager").play_click()
 		print(level)
+		get_node("Grid/Middle").disabled = true
+		get_node("Grid/Left").disabled = true
+		get_node("Grid/Right").disabled = true
 		get_parent().navigate(level, challenge_debuffs)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
