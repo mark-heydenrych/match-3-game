@@ -1077,14 +1077,18 @@ func spawn_special_blocks():
 						get_node("VerticalLightning").position = Vector2(x_pos, 0)
 						get_node("VerticalLightning").visible = true
 						for c in width:
-							if (all_pieces[c][y].colour == "Stone" || all_pieces[c][y].colour == "Virus" || all_pieces[c][y].colour == "XStone" || all_pieces[c][y].colour == "XVirus"):
+							if (all_pieces[c][y].fixed):
+								pass
+							elif (all_pieces[c][y].colour == "Stone" || all_pieces[c][y].colour == "Virus" || all_pieces[c][y].colour == "XStone" || all_pieces[c][y].colour == "XVirus"):
 								all_pieces[c][y].durability -= 1
 								all_pieces[c][y].crack_piece()
 							elif (!all_pieces[c][y].matched):
 								all_pieces[c][y].matched = true
 								round_matched += 1
 						for r in height:
-							if (all_pieces[x][r].colour == "Stone" || all_pieces[x][r].colour == "Virus" || all_pieces[x][r].colour == "XStone" || all_pieces[x][r].colour == "XVirus"):
+							if (all_pieces[x][r].fixed):
+								pass
+							elif (all_pieces[x][r].colour == "Stone" || all_pieces[x][r].colour == "Virus" || all_pieces[x][r].colour == "XStone" || all_pieces[x][r].colour == "XVirus"):
 								all_pieces[x][r].durability -= 1
 								all_pieces[x][r].crack_piece()
 							elif (!all_pieces[x][r].matched):
@@ -1096,7 +1100,9 @@ func spawn_special_blocks():
 							# Formula y = mx + c. The c is the offset from the centre diagonal. m is 1 for a perfect diagonal
 							var r = w + positive_c
 							if (r >= height || r < 0): continue
-							if (all_pieces[w][r].colour == "Stone" || all_pieces[w][r].colour == "Virus" || all_pieces[w][r].colour == "XStone" || all_pieces[w][r].colour == "XVirus"):
+							if (all_pieces[w][r].fixed):
+								pass
+							elif (all_pieces[w][r].colour == "Stone" || all_pieces[w][r].colour == "Virus" || all_pieces[w][r].colour == "XStone" || all_pieces[w][r].colour == "XVirus"):
 								all_pieces[w][r].durability -= 1
 								all_pieces[w][r].crack_piece()
 							elif (!all_pieces[w][r].matched):
@@ -1110,7 +1116,9 @@ func spawn_special_blocks():
 							# Formula y = mx + c. The c is the offset from the centre diagonal. m is 1 for a perfect diagonal
 							var r = -w + negative_c
 							if (r >= height || r < 0): continue
-							if (all_pieces[w][r].colour == "Stone" || all_pieces[w][r].colour == "Virus" || all_pieces[w][r].colour == "XStone" || all_pieces[w][r].colour == "XVirus"):
+							if (all_pieces[w][r].fixed):
+								pass
+							elif (all_pieces[w][r].colour == "Stone" || all_pieces[w][r].colour == "Virus" || all_pieces[w][r].colour == "XStone" || all_pieces[w][r].colour == "XVirus"):
 								all_pieces[w][r].durability -= 1
 								all_pieces[w][r].crack_piece()
 							elif (!all_pieces[w][r].matched):
@@ -1129,7 +1137,9 @@ func match_special_blocks():
 			if (all_pieces[x][y].matched && all_pieces[x][y].special):
 				var neighbours = get_neighbours(x, y, true)
 				for n in neighbours:
-					if (all_pieces[n.x][n.y].colour == "Stone" || all_pieces[n.x][n.y].colour == "Virus" || all_pieces[n.x][n.y].colour == "XStone" || all_pieces[n.x][n.y].colour == "XVirus"):
+					if (all_pieces[n.x][n.y].fixed):
+						pass
+					elif (all_pieces[n.x][n.y].colour == "Stone" || all_pieces[n.x][n.y].colour == "Virus" || all_pieces[n.x][n.y].colour == "XStone" || all_pieces[n.x][n.y].colour == "XVirus"):
 						all_pieces[n.x][n.y].durability -= 1
 						all_pieces[n.x][n.y].crack_piece()
 					elif (!all_pieces[n.x][n.y].matched):
