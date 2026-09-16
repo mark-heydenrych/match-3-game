@@ -2,6 +2,8 @@ class_name BlackMarket
 extends Node2D
 
 @export var num_diamonds: int = 0
+@export var chip_fragments = []
+var microchips = [null, null, null, null, null, null]
 var active = true
 var upgrade_buttons = []
 var helper_bought = false
@@ -23,6 +25,9 @@ func set_num_diamonds(diamonds: int):
 	get_node("ShardsLabel").clear()
 	get_node("ShardsLabel").push_color(Color.BLACK)
 	get_node("ShardsLabel").append_text("Shards: " + str(diamonds))
+	
+func set_fragments(fragments):
+	chip_fragments = fragments
 
 func _input(event):
 	if (!active):
@@ -175,7 +180,6 @@ func unlock_side_panel():
 		get_parent().get_node("Globals").sideboard_unlocked = true
 		get_parent().get_node("Globals").slot_upgrades[0][2] = true
 		get_parent().get_node("Globals").battery_upgrades[0][2] = true
-		get_parent().get_node("Globals").card_upgrades[0][2] = true
 		recreate_hacker_buttons()
 
 func buy_helper(cost):
@@ -219,6 +223,8 @@ func _on_hacker_button_pressed():
 	get_node("NewRunButton").visible = false
 	get_node("NewRunButton").disabled = true
 	get_node("MarketBackground").visible = false
+	get_node("WorkbenchButton").visible = false
+	get_node("WorkbenchButton").disabled = true
 	create_hacker_buttons()
 	pass # Replace with function body.
 
@@ -236,6 +242,8 @@ func _on_battery_button_pressed():
 	get_node("NewRunButton").visible = false
 	get_node("NewRunButton").disabled = true
 	get_node("MarketBackground").visible = false
+	get_node("WorkbenchButton").visible = false
+	get_node("WorkbenchButton").disabled = true
 	create_battery_buttons()
 	pass # Replace with function body.
 
@@ -255,6 +263,8 @@ func _on_back_button_pressed():
 	get_node("HackerSprite").visible = false
 	get_node("BatterySprite").visible = false
 	get_node("SmugglerSprite").visible = false
+	get_node("WorkbenchButton").visible = true
+	get_node("WorkbenchButton").disabled = false
 	clear_battery_buttons()
 	clear_hacker_buttons()
 	clear_smuggler_buttons()
@@ -273,6 +283,8 @@ func _on_smuggler_button_pressed():
 	get_node("SmugglerButton").disabled = true
 	get_node("NewRunButton").visible = false
 	get_node("NewRunButton").disabled = true
+	get_node("WorkbenchButton").visible = false
+	get_node("WorkbenchButton").disabled = true
 	create_smuggler_buttons()
 	get_node("MarketBackground").visible = false
 	pass # Replace with function body.
@@ -293,3 +305,20 @@ func _on_guidebook_button_pressed():
 func close_guidebook():
 	active = true
 	get_node("Guidebook").queue_free()
+
+
+func _on_workbench_button_pressed():
+	if (!active):
+		return
+	get_node("/root/BaseScene/AudioManager").play_click()
+	active = false
+	var workbench = preload("res://Scenes/workbench.tscn").instantiate()
+	workbench.name = "Workbench"
+	add_child(workbench)
+	workbench.z_index = 10
+	workbench.position = Vector2(640, 360)
+	workbench.get_node("ExitButton").pressed.connect(close_workbench)
+
+func close_workbench():
+	active = true
+	get_node("Workbench").queue_free()

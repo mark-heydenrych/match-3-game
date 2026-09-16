@@ -26,7 +26,7 @@ var green_matched = 0
 var blue_matched = 0
 var purple_matched = 0
 
-# All the chip fragemtns
+# All the chip fragments
 var chip_fragments = []
 # The currently active scene. Used for scene transitions
 var active_scene
@@ -181,8 +181,9 @@ func _on_grid_end_turn(moved: bool):
 	# Update the sideboard to reduce the  durability of cards
 	print("Moved: " + str(moved))
 	if (moved):
-		# We need to reduce to diraction of active microchips
-		set_grid_effects()
+		# We need to reduce to duration of active microchips
+		# set_grid_effects()
+		pass
 	if (moved):
 		if (get_node("Grid").round_matched >= 5):
 			if (get_node("Grid").round_matched >= 9):
@@ -471,3 +472,6 @@ func close_guidebook():
 
 func add_fragment(type: String, value: String):
 	chip_fragments.append([type, value])
+	
+func set_microchips(chips):
+	get_node("SideBoard").set_microchips(chips)

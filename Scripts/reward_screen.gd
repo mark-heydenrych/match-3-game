@@ -3,7 +3,7 @@ extends Node2D
 
 var active: bool = true
 var reward_fragments = []
-var num_fragments = 3
+var num_fragments = 30
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
