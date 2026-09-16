@@ -573,7 +573,7 @@ func _process(delta):
 
 func move_pieces_helper(position1, position2):
 	var direction: Vector2 = position2 - position1
-	if (direction.length() == 1 || active_effects.has("TRANSLOCATOR")):
+	if (direction.length() == 1 || active_effects.has("QUANTUM_TRANSLOCATOR")):
 		get_node("/root/BaseScene/AudioManager").play_swish()
 		var piece1 = all_pieces[position1.x][position1.y]
 		var piece2 = all_pieces[position2.x][position2.y]
@@ -586,7 +586,7 @@ func move_pieces_helper(position1, position2):
 func move_pieces(position1, position2, moved_by_helper = false):
 	helper_move = moved_by_helper
 	var direction: Vector2 = position2 - position1
-	if (direction.length() == 1 || active_effects.has("TRANSLOCATOR")):
+	if (direction.length() == 1 || active_effects.has("QUANTUM_TRANSLOCATOR")):
 		get_node("/root/BaseScene/AudioManager").play_swish()
 		if (!active_effects.has("TIME_STOP") && !moved_by_helper):
 			get_parent().reduce_turns(1)
@@ -708,7 +708,7 @@ func _input(event):
 		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_C:
 			run_conveyers()
 		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_Q:
-			active_effects.append("TRANSLOCATOR")
+			active_effects.append("QUANTUM_TRANSLOCATOR")
 		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_B:
 			active_effects.append("MATCH_TYPE_DIAGONAL")
 			process_effects()
@@ -1365,8 +1365,9 @@ func correct_colours():
 				all_pieces[i][j].colour = "green"
 
 func add_effect(effect):
-	active_effects.append(effect)
-	process_effects()
+	if effect not in active_effects:
+		active_effects.append(effect)
+		process_effects()
 
 func remove_effect(effect):
 	active_effects.erase(effect)

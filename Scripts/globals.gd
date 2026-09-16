@@ -56,7 +56,7 @@ var battery_upgrades = [
 	["Megavolt Cell", 90, false, false]
 ]
 
-var sideboard_unlocked = false
+var sideboard_unlocked = true
 
 var radar_unlocked = false
 

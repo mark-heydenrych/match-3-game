@@ -64,6 +64,8 @@ func json_to_sideboard(json_array):
 func remove_all_debuffs():
 	pass
 
+func set_microchips(chips):
+	microchips = chips
 
 func _on_red_button_pressed():
 	print("Clicked red")

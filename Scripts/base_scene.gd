@@ -124,11 +124,12 @@ func end_game(game_state):
 		add_child(status_screen)
 		status_screen.set_label_text(get_node("gameboard").score)
 		var diamonds = get_node("gameboard").diamonds
+		var fragments = get_node("gameboard").chip_fragments
 		get_node("gameboard").queue_free()
 		status_screen.position = Vector2(640, 360)
 		move_child(status_screen, 0)
 		status_screen.z_index = 6
-		status_screen.get_node("CloseButton").pressed.connect(start_black_market.bind(diamonds))
+		status_screen.get_node("CloseButton").pressed.connect(start_black_market.bind(diamonds, fragments))
 		
 	if (game_state == "WIN"):
 		var tween: Tween = create_tween()
@@ -146,12 +147,13 @@ func end_game(game_state):
 		tween2.tween_property(get_node("ShutterSprite"),"position", Vector2(640, -640), 0.3).set_ease(Tween.EASE_OUT)
 		tween2.play()
 
-func start_black_market(diamonds):
+func start_black_market(diamonds, fragments):
 	remove_child(get_node("status_screen"))
 	get_node("Globals").starting_shards = 0
 	# Go to the black market between runs
 	var market: BlackMarket = preload("res://Scenes/black_market.tscn").instantiate()
 	market.set_num_diamonds(diamonds)
+	market.set_fragments(fragments)
 	add_child(market)
 	get_node("/root/BaseScene/AudioManager").play_market_music()
 	market.get_node("NewRunButton").pressed.connect(new_run)
@@ -171,6 +173,7 @@ func new_run():
 	get_node("/root/BaseScene/AudioManager").end_market_music()
 	await get_tree().create_timer(1.5).timeout
 	
+	var chips = get_node("BlackMarket").microchips
 	get_node("BlackMarket").queue_free()
 	var game_board: GameBoard = preload("res://Scenes/game_board.tscn").instantiate()
 	add_child(game_board)
@@ -178,6 +181,7 @@ func new_run():
 	game_board.set_num_turns(get_node("Globals").max_turns)
 	game_board.set_max_turns(get_node("Globals").max_turns)
 	game_board.add_diamonds(get_node("Globals").starting_shards)
+	game_board.set_microchips(chips)
 	game_board.game_finished.connect(end_game)
 	game_board.name = "gameboard"
 	get_node("/root/BaseScene/AudioManager").play_puzzle_music()

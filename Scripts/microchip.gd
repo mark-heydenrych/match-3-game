@@ -9,7 +9,7 @@ var active: bool = false
 
 signal expired(effect)
 
-static func new_microchip(_cost: int, _effect: String, _duration: float, _active: bool):
+static func new_microchip(_cost: int, _effect: String, _duration: float, _active: bool = false):
 	var chip = load("res://Scenes/microchip.tscn").instantiate()
 	chip.cost = _cost
 	chip.effect = _effect
