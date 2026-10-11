@@ -699,6 +699,8 @@ func toggle_visibility():
 func _input(event):
 	if (active):
 		
+		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_P:
+			print_grid()
 		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_V:
 			toggle_visibility()
 		if event is InputEventKey and event.is_pressed() and event.keycode == KEY_S:
@@ -878,7 +880,7 @@ func count_vertical_matches():
 	for i in width:
 		var col_matches = 0
 		for j in height:
-			if (all_pieces[i][j].matched && all_pieces[i][j].colour != "BLANK"):
+			if (all_pieces[i][j].matched && !all_pieces[i][j].corner_matched):
 				col_matches += 1
 		if (col_matches >= 3):
 			v += col_matches
@@ -889,7 +891,7 @@ func count_horizontal_matches():
 	for j in height:
 		var row_matches = 0
 		for i in width:
-			if (all_pieces[i][j].matched && all_pieces[i][j].colour != "BLANK"):
+			if (all_pieces[i][j].matched && !all_pieces[i][j].corner_matched):
 				row_matches += 1
 		if (row_matches >= 3):
 			h += row_matches
@@ -904,7 +906,7 @@ func count_positive_diagonal_matches():
 			# Formula y = mx + c. The c is the offset from the centre diagonal. m is 1 for a perfect diagonal
 			var y = x + c
 			if (y >= height || y < 0): continue
-			if (all_pieces[x][y].matched && all_pieces[x][y].colour != "BLANK"):
+			if (all_pieces[x][y].matched && !all_pieces[x][y].corner_matched):
 				diag_matches += 1
 		if (diag_matches >= 3):
 			p += diag_matches
@@ -919,7 +921,7 @@ func count_negative_diagonal_matches():
 			# Formula y = mx + c. The c is the offset from the centre diagonal. m is -1 for a perfect diagonal
 			var y = -1 * x + c
 			if (y >= height || y < 0): continue
-			if (all_pieces[x][y].matched && all_pieces[x][y].colour != "BLANK"):
+			if (all_pieces[x][y].matched && !all_pieces[x][y].corner_matched):
 				diag_matches += 1
 		if (diag_matches >= 3):
 			n += diag_matches
@@ -940,11 +942,11 @@ func count_corners():
 				for h in height:
 					if (all_pieces[x][h].matched && all_pieces[x][h].matches(colour)):
 						col_matches += 1
-						all_pieces[x][h].colour = "BLANK"
+						all_pieces[x][h].corner_matched = true
 				for w in width:
 					if (all_pieces[w][y].matched && all_pieces[w][y].matches(colour)):
 						row_matches += 1
-						all_pieces[w][y].colour = "BLANK"
+						all_pieces[w][y].corner_matched = true
 				if (col_matches >= 3):
 					corner_matches += col_matches
 				# Only need 2 on the horizontal since the corner will have been recoloured
@@ -996,17 +998,17 @@ func count_diag_corners():
 					# Formula y = mx + c. The c is the offset from the centre diagonal. m is 1 for a perfect diagonal
 					var h = w + positive_c
 					if (h >= height || h < 0): continue
-					if (all_pieces[w][h].matched && all_pieces[w][h].colour != "BLANK"):
+					if (all_pieces[w][h].matched && !all_pieces[w][h].corner_matched):
 						pos_matches += 1
-						all_pieces[w][h].colour = "BLANK"
+						all_pieces[w][h].corner_matched = true
 				var negative_c = y + x
 				for w in width:
 					# Formula y = mx + c. The c is the offset from the centre diagonal. m is -1 for a perfect diagonal
 					var h = -1 * w + negative_c
 					if (h >= height || h < 0): continue
-					if (all_pieces[w][h].matched && all_pieces[w][h].colour != "BLANK"):
+					if (all_pieces[w][h].matched && !all_pieces[w][h].corner_matched):
 						neg_matches += 1
-						all_pieces[w][h].colour = "BLANK"
+						all_pieces[w][h].corner_matched = true
 				if (pos_matches >= 3):
 					corner_matches += pos_matches
 				# Only need 2 on the negative since the corner will have been recoloured
@@ -1058,21 +1060,7 @@ func spawn_special_blocks():
 					all_pieces[x][y].special = true
 					all_pieces[x][y].get_node("Sparkle").visible = true
 					all_pieces[x][y].get_node("Sparkle").material.set_shader_parameter("surface", all_pieces[x][y].get_node("Sprite2D").texture)
-					# Assign the colour which was previously removed
-					if all_pieces[x][y] is RedPiece:
-						all_pieces[x][y].colour = "red"
-					if all_pieces[x][y] is OrangePiece:
-						all_pieces[x][y].colour = "orange"
-					if all_pieces[x][y] is YellowPiece:
-						all_pieces[x][y].colour = "yellow"
-					if all_pieces[x][y] is GreenPiece:
-						all_pieces[x][y].colour = "green"
-					if all_pieces[x][y] is BluePiece:
-						all_pieces[x][y].colour = "blue"
-					if all_pieces[x][y] is PurplePiece:
-						all_pieces[x][y].colour = "purple"
-					if all_pieces[x][y] is RainbowPiece:
-						all_pieces[x][y].colour = "redorangeyellowgreenbluepurple"
+					fix_block_colours()
 					print("New special block. Colour: " + all_pieces[x][y].colour)
 				if (matched_neighbours >= 4):
 					if (match_type == MATCH_TYPE.STANDARD || match_type == MATCH_TYPE.QUEEN || match_type == MATCH_TYPE.TETRIS):
@@ -1140,6 +1128,26 @@ func spawn_special_blocks():
 					get_node("Lightning_Timer").start(0.5)
 	recolour_for_exclusion()
 
+func fix_block_colours():
+	# Assign the colour which was previously removed
+	for x in range(width):
+		for y in range(height):
+			if all_pieces[x][y] is RedPiece:
+				all_pieces[x][y].colour = "red"
+			if all_pieces[x][y] is OrangePiece:
+				all_pieces[x][y].colour = "orange"
+			if all_pieces[x][y] is YellowPiece:
+				all_pieces[x][y].colour = "yellow"
+			if all_pieces[x][y] is GreenPiece:
+				all_pieces[x][y].colour = "green"
+			if all_pieces[x][y] is BluePiece:
+				all_pieces[x][y].colour = "blue"
+			if all_pieces[x][y] is PurplePiece:
+				all_pieces[x][y].colour = "purple"
+			if all_pieces[x][y] is RainbowPiece:
+				all_pieces[x][y].colour = "redorangeyellowgreenbluepurple"
+			all_pieces[x][y].corner_matched = false
+
 func match_special_blocks():
 	for x in width:
 		for y in height:
@@ -1173,6 +1181,7 @@ func _on_clear_timer_timeout():
 	match_special_blocks()
 	clear_matches()
 	clear_broken()
+	fix_block_colours()
 	var pitch_shift = 0.7 + (round_matched / 10.0)
 	get_node("/root/BaseScene/AudioManager").play_match(pitch_shift)
 
@@ -1550,3 +1559,12 @@ func exclude_column(col):
 		exclusion.position = exclusion_pos
 		add_child(exclusion)
 		exclusions.append(exclusion)
+
+func print_grid():
+	for y in range(height):
+		var output = ("[")
+		for x in range(width):
+			output = output + all_pieces[x][y].colour[0]
+		output = output + ("]")
+		print(output)
+			
