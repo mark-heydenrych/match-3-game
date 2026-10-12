@@ -639,6 +639,10 @@ func crack_hard_blocks():
 func clear_matches():
 	for i in width:
 		for j in height:
+			if (all_pieces[i][j].new_special):
+				# We don't want to clear new special blocks
+				all_pieces[i][j].matched = false
+				all_pieces[i][j].new_special = false
 			if (all_pieces[i][j].matched):
 				all_pieces[i][j].move_to_bag()
 				#all_pieces[i][j].queue_free()
@@ -682,7 +686,6 @@ func check_for_matches():
 			if (all_pieces[i][j].colour != "null" && match_at(i, j, all_pieces[i][j].colour)):
 				all_pieces[i][j].matched = true
 				matches_found = true
-	count_matches()
 	print("Round matched: " + str(round_matched))
 	return matches_found
 
@@ -1056,8 +1059,9 @@ func spawn_special_blocks():
 						matched_neighbours += 1
 				# If at least 3 neighbours are matched...
 				if (matched_neighbours == 3):
-					all_pieces[x][y].matched = false
+					#all_pieces[x][y].matched = false
 					all_pieces[x][y].special = true
+					all_pieces[x][y].new_special = true
 					all_pieces[x][y].get_node("Sparkle").visible = true
 					all_pieces[x][y].get_node("Sparkle").material.set_shader_parameter("surface", all_pieces[x][y].get_node("Sprite2D").texture)
 					fix_block_colours()
@@ -1078,7 +1082,6 @@ func spawn_special_blocks():
 								all_pieces[c][y].crack_piece()
 							elif (!all_pieces[c][y].matched):
 								all_pieces[c][y].matched = true
-								round_matched += 1
 								colour_count(all_pieces[c][y])
 						for r in height:
 							if (all_pieces[x][r].fixed):
@@ -1088,7 +1091,6 @@ func spawn_special_blocks():
 								all_pieces[x][r].crack_piece()
 							elif (!all_pieces[x][r].matched):
 								all_pieces[x][r].matched = true
-								round_matched += 1
 								colour_count(all_pieces[x][r])
 					if (match_type == MATCH_TYPE.DIAGONAL || match_type == MATCH_TYPE.QUEEN):
 						var positive_c = y - x
@@ -1103,7 +1105,6 @@ func spawn_special_blocks():
 								all_pieces[w][r].crack_piece()
 							elif (!all_pieces[w][r].matched):
 								all_pieces[w][r].matched = true
-								round_matched += 1
 								colour_count(all_pieces[w][r])
 						var y_pos = (positive_c - 1) * 64 + 32
 						get_node("PosDiagonalLightning").visible = true
@@ -1120,7 +1121,6 @@ func spawn_special_blocks():
 								all_pieces[w][r].crack_piece()
 							elif (!all_pieces[w][r].matched):
 								all_pieces[w][r].matched = true
-								round_matched += 1
 								colour_count(all_pieces[w][r])
 						y_pos = (negative_c - 8) * 64 + 32
 						get_node("NegDiagonalLightning").visible = true
@@ -1162,7 +1162,6 @@ func match_special_blocks():
 						all_pieces[n.x][n.y].crack_piece()
 					elif (!all_pieces[n.x][n.y].matched):
 						all_pieces[n.x][n.y].matched = true
-						round_matched += 1
 						colour_count(all_pieces[n.x][n.y])
 
 func _on_collapse_timer_timeout():
@@ -1176,9 +1175,10 @@ func _on_clear_timer_timeout():
 	diag_cross_matched = count_diag_corners()
 	positive_diagonal_matched = count_positive_diagonal_matches()
 	negative_diagonal_matched = count_negative_diagonal_matches()
+	match_special_blocks()
 	spawn_special_blocks()
 	crack_hard_blocks()
-	match_special_blocks()
+	count_matches()
 	clear_matches()
 	clear_broken()
 	fix_block_colours()

@@ -5,7 +5,9 @@ extends Node2D
 @export var matched: bool
 @export var durability: int
 @export var fixed: bool = false
+# Keeps tracks of whether this is a special block, and if it is newly special
 @export var special: bool = false
+@export var new_special: bool = false
 #Keeps track of whether this pirce was part of a corner match. For efficiency calculations
 @export var corner_matched = false
 var grid_x: int
